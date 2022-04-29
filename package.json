@@ -1,0 +1,27 @@
+{
+  "name": "igbo-app-api",
+  "version": "1.0.0",
+  "description": "An igbo translation and learning app",
+  "author": "Ogwuru Patrick <sirpatrickchigozie@gmail.com>",
+  "keywords": [
+    "backend"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "http-errors": "^2.0.0",
+    "pino": "^7.10.0",
+    "pino-http": "^6.6.0",
+    "pino-pretty": "^7.6.1",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "helmet": "^5.0.2",
+    "mongoose": "^6.2.10"
+  }
+}
