@@ -1,13 +1,98 @@
 "use strict";
+// import { Router } from "express";
 import { app_state } from "../handlers/database.js";
 import { AppWorkers } from "../handlers/database.js";
-import Posts from "../models/models.js";
+import { Words, DictQuiz, SearchQuiz } from "../models/models.js";
 const { useOffline, useOnline } = AppWorkers;
+
+//handler for batch-uploads from offlineStore.
+const handleBatchUpload = async (req, res) => {
+  let post;
+  try {
+    post = await Words.create(req.body);
+    res.status(200).json({ state: true, data: post });
+    // req.body.forEach(async (obj) => {
+    //   //looks up and returns object that already exists.
+    //   post = await Posts.findOne({ name: obj.name });
+    // });
+    // if (post !== null) {
+    //   res
+    //     .status(400)
+    //     .json({ message: `At least one post already exists`, data: post });
+    // } else {
+    // }
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+//handler for creating Search-quizzes.
+// const handleSearchQuiz = async (req, res, next) => {
+//   let response;
+//   const newQuiz = new SearchQuiz({
+//     question: req.body.question,
+//     answerRight: req.body.answerRight,
+//     answerWrong: req.body.answerWrong,
+//   });
+//   return newQuiz;
+//   // try {
+//   //   const null_response = await SearchQuiz.findOne({ name: newQuiz.name });
+//   //   if (
+//   //     null_response != null
+//   //       ? myError(`Resource already exists`)
+//   //       : ((response = await newQuiz.save()),
+//   //         res.status(200).json({ state: true, data: response }))
+//   //   );
+//   // } catch (err) {
+//   //   return res.status(500).json({ state: false, message: err.message });
+//   // }
+// };
+
+//handler for creating Dict-quizzes.
+// const handleDictQuiz = async (req, res, next) => {
+//   let response;
+//   const newQuiz = new DictQuiz({
+//     question: req.body.question,
+//     answerRight: req.body.answerRight,
+//     answerWrong1: req.body.answerWrong1,
+//     answerWrong2: req.body.answerWrong2,
+//   });
+//   return newQuiz;
+//   // try {
+//   //   const null_response = await DictQuiz.findOne({ name: newQuiz.name });
+//   //   if (
+//   //     null_response != null
+//   //       ? myError(`Resource already exists`)
+//   //       : ((response = await newQuiz.save()),
+//   //         res.status(200).json({ state: true, data: response }))
+//   //   );
+//   // } catch (err) {
+//   //   return res.status(500).json({ state: false, message: err.message });
+//   // }
+// };
+
+//general quiz post handler.
+const handleQuiz = async (req, res) => {
+  const type = {
+    search: "search",
+    dict: "dict",
+  };
+  switch (req.params.quiz) {
+    case type.search:
+      const R = await SearchQuiz.create(req.body);
+      break;
+    case type.dict:
+      const S = await DictQuiz.create(req.body);
+      break;
+    default:
+      break;
+  }
+};
 
 //handler for router.post().
 const handlePost = async (req, res) => {
   let response;
-  const new_post = new Posts({
+  const newWord = new Words({
     name: req.body.name,
     translation: req.body.translation,
     definitions: req.body.definitions,
@@ -15,11 +100,12 @@ const handlePost = async (req, res) => {
   });
 
   try {
-    const null_response = await Posts.findOne({ name: new_post.name });
+    const null_response = await Words.findOne({ name: newWord.name });
     if (
       null_response !== null
         ? myError(`Resource already exists`)
-        : ((response = await new_post.save()),
+        : //todo: the {create} keyword also works like save.
+          ((response = await newWord.save()),
           res.status(200).json({ state: true, data: response }))
     );
   } catch (err) {
@@ -32,10 +118,10 @@ const myError = (err) => {
 
 //handler for router.get().
 //todo: future: find words that match strings no matter if its not exact match.
-const handleGet = async (req, res) => {
+const handleGetWords = async (req, res) => {
   try {
-    const allPosts = await Posts.find({});
-    res.status(200).json({ state: true, data: allPosts });
+    const allWords = await Words.find({});
+    res.status(200).json({ state: true, data: allWords });
   } catch (err) {
     res
       .status(404)
@@ -43,15 +129,55 @@ const handleGet = async (req, res) => {
   }
 };
 
+//handler to get Search Quizzes.
+const getSearchQuizzes = async (req, res) => {
+  try {
+    const response = await SearchQuiz.find({});
+    return res.status(200).json({ state: true, data: response });
+  } catch (error) {}
+};
+
+//handler to get Dictionary Quizzes.
+const getDictQuizzes = async (req, res) => {
+  try {
+    const response = await DictQuiz.find({});
+    return res.status(200).json({ state: true, data: response });
+  } catch (error) {}
+};
+
+//handler for router.getQuiz
+const handleGetQuiz = async (req, res) => {
+  const types = {
+    search: "search",
+    dict: "dict",
+  };
+  switch (req.params.allQuiz) {
+    case types.search:
+      //todo: encapsule logic into a trycatch somehow.
+      // await getSearchQuizzes();
+      const response = await SearchQuiz.find({});
+      return res.status(200).json({ state: true, data: response });
+      break;
+    case types.dict:
+      //todo: encapsule logic into a trycatch somehow.
+      // await getDictQuizzes();
+      const result = await DictQuiz.find({});
+      return res.status(200).json({ state: true, data: result });
+      break;
+    default:
+      break;
+  }
+};
+
 //handler for router.getOne.
 //todo: future: find words that match strings no matter if its not exact match.
 const handleGetOne = async (req, res) => {
-  let post;
+  let word;
   try {
-    post = await Posts.findOne({ name: req.params.name });
+    word = await Words.findOne({ name: req.params.name });
     if (
-      post !== null
-        ? res.status(200).json({ state: true, data: post })
+      word !== null
+        ? res.status(200).json({ state: true, data: word })
         : myError(`Returned Empty`)
     );
   } catch (err) {
@@ -74,6 +200,7 @@ const handleGetState = async (req, res) => {
 };
 
 //handler for router.get-switch.
+//!! to be deprecated / removed in production.
 const handleSwitch = async (req, res) => {
   const switch_const = req.params.switch;
   switch (switch_const) {
@@ -122,10 +249,10 @@ const handleSwitch = async (req, res) => {
 
 //handler for router.delete-one.
 const handleDelete = async (req, res) => {
-  let post;
+  let word;
   try {
-    post = await Posts.findOne({ name: req.params.name });
-    const resp = await post.remove();
+    word = await Words.findOne({ name: req.params.name });
+    const resp = await word.remove();
     res.status(200).json({
       state: true,
       message: [`Resource was deleted`, resp],
@@ -138,37 +265,48 @@ const handleDelete = async (req, res) => {
   }
 };
 
+//handler for router.deleteAll
+const handleDeleteAll = async (req, res) => {
+  try {
+    const response = await Words.deleteMany({});
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
 //handler for router.patch().
 const handlePatch = async (req, res) => {
-  let post;
+  let word;
   try {
-    post = await Posts.findOne({ name: req.params.name });
+    word = await Words.findOne({ name: req.params.name });
     if (req.body.genre != null) {
       post.genre = req.body.genre;
       try {
-        const updatedProps = await post.save();
+        const updatedProps = await word.save();
         res.json({ state: true, message: updatedProps });
       } catch (err) {
-        res.json({
-          state: false,
-          message: `Failed to update - ${err.message}`,
-        });
+        return myError(`Failed to update - ${err.message}`);
       }
     }
   } catch (err) {
     res.status(404).json({
       state: false,
-      message: `Could not update resource ${err.message}`,
+      message: `Could not update resource - ${err.message}`,
     });
   }
 };
 
 export {
+  handleBatchUpload,
   handlePost,
-  handleGet,
+  handleGetWords,
+  handleGetQuiz,
   handleGetOne,
   handleGetState,
   handleSwitch,
   handleDelete,
+  handleDeleteAll,
   handlePatch,
+  handleQuiz,
 };

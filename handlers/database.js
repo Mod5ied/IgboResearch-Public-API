@@ -1,7 +1,6 @@
 "use strict";
-// import checkInternetConnected from "check-internet-connected";
 import mongoose from "mongoose";
-import Posts from "../models/models.js";
+import { Words } from "../models/models.js";
 import { env } from "process";
 import { config } from "dotenv";
 config();
@@ -10,7 +9,7 @@ let app_state;
 
 class DatabaseWorkers {
   //meth used in Dev to fetch data from local db.
-  //todo: To be Deprecated / Removed in production.
+  //!! To be Deprecated / Removed in production.
   static fetchLocal = async () => {
     let postsArray;
     try {
@@ -21,11 +20,11 @@ class DatabaseWorkers {
     }
     return postsArray;
   };
-
+  //!! To be Deprecated / Removed in production.
   static postData = async (data) => {
     let resp;
     try {
-      const res = Posts.insertMany(data);
+      const res = Words.insertMany(data);
       resp = res ? true : false;
     } catch (err) {
       console.error(err.message);
@@ -50,7 +49,7 @@ class DatabaseWorkers {
     }
     return resp;
   };
-
+  //!! To be Deprecated / Removed in production.
   static stopDb = async () => {
     let resp;
     try {
@@ -68,7 +67,7 @@ class DatabaseWorkers {
     return resp;
   };
   //meth used in dev to delete all data from db(preferably in local)
-  //todo: To be Deprecated / Removed in production.
+  //!! To be Deprecated / Removed in production.
   static wipeLocal = async () => {
     let resp;
     try {
@@ -91,7 +90,7 @@ class AppWorkers {
   //fetches data from local db, then stops local db
   //-while switching to the cloud if the array isn't void
   //-passing the fetched data to connectAndPost meth to push to cloud.
-  //todo: To be Deprecated / Removed in production.
+  //!! To be Deprecated / Removed in production.
   static useOnline = async () => {
     let resp;
     try {
@@ -129,13 +128,16 @@ async function startApp(app, port, local) {
       console.log(`App is running on port ${port}`);
     });
   } catch (err) {
-    console.error({ message: `Error starting app - ${err.message}` });
+    console.error({
+      code: err.code || "InternalServerError",
+      message: `Error starting app - ${err.message}`,
+    });
   }
 }
 //fn is called by the useOnline meth to restart the db to cloud,
 //-create a new object with the data fetched from local,
 //-finally push the data to the cloud as new entry.
-//todo: To be Deprecated / Removed in production.
+//!! To be Deprecated / Removed in production.
 async function connectAndPost(post) {
   try {
     const resp = await DatabaseWorkers.connectDb(env.cloud);
