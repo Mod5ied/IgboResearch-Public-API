@@ -2,16 +2,17 @@
 import dotenv from "dotenv";
 import { Router } from "express";
 import {
-  handleDelete,
+  handleBatchUpload,
+  handleDeleteWord,
+  handleDeleteQuiz,
+  handleGetState,
   handleGetWords,
   handleGetQuiz,
   handleGetOne,
-  handleGetState,
   handlePatch,
   handlePost,
   handleQuiz,
   handleSwitch,
-  handleBatchUpload,
   handleDeleteAll,
 } from "./middlewares/router.js";
 const router = Router();
@@ -35,8 +36,11 @@ router.get("/get/:switch", handleSwitch);
 
 router.patch("/update/:name", handlePatch);
 
+//!! to be deprecated / removed pre-production.
 router.delete("/delete/wipe", handleDeleteAll);
 
-router.delete("/delete/:name", handleDelete);
+router.delete("/delete/:name", handleDeleteWord);
+
+router.delete("/delete/quiz/:quiz", handleDeleteQuiz);
 
 export default router;

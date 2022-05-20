@@ -79,10 +79,20 @@ const handleQuiz = async (req, res) => {
   };
   switch (req.params.quiz) {
     case type.search:
-      const R = await SearchQuiz.create(req.body);
+      try {
+        const response = await SearchQuiz.create(req.body);
+        res.status(200).json({ state: true, data: response });
+      } catch (error) {
+        res.status(500).json({ state: false, message: err.message });
+      }
       break;
     case type.dict:
-      const S = await DictQuiz.create(req.body);
+      try {
+        const response = await DictQui.create(req.body);
+        res.status(200).json({ state: true, data: response });
+      } catch (err) {
+        res.status(500).json({ state: false, message: err.message });
+      }
       break;
     default:
       break;
@@ -129,22 +139,6 @@ const handleGetWords = async (req, res) => {
   }
 };
 
-//handler to get Search Quizzes.
-const getSearchQuizzes = async (req, res) => {
-  try {
-    const response = await SearchQuiz.find({});
-    return res.status(200).json({ state: true, data: response });
-  } catch (error) {}
-};
-
-//handler to get Dictionary Quizzes.
-const getDictQuizzes = async (req, res) => {
-  try {
-    const response = await DictQuiz.find({});
-    return res.status(200).json({ state: true, data: response });
-  } catch (error) {}
-};
-
 //handler for router.getQuiz
 const handleGetQuiz = async (req, res) => {
   const types = {
@@ -153,16 +147,20 @@ const handleGetQuiz = async (req, res) => {
   };
   switch (req.params.allQuiz) {
     case types.search:
-      //todo: encapsule logic into a trycatch somehow.
-      // await getSearchQuizzes();
-      const response = await SearchQuiz.find({});
-      return res.status(200).json({ state: true, data: response });
+      try {
+        const response = await SearchQuiz.find({});
+        res.status(200).json({ state: true, data: response });
+      } catch (err) {
+        res.status(500).json({ state: false, message: err.message });
+      }
       break;
     case types.dict:
-      //todo: encapsule logic into a trycatch somehow.
-      // await getDictQuizzes();
-      const result = await DictQuiz.find({});
-      return res.status(200).json({ state: true, data: result });
+      try {
+        const response = await DictQuiz.find({});
+        res.status(200).json({ state: true, data: response });
+      } catch (err) {
+        res.status(500).json({ state: false, message: err.message });
+      }
       break;
     default:
       break;
@@ -200,7 +198,7 @@ const handleGetState = async (req, res) => {
 };
 
 //handler for router.get-switch.
-//!! to be deprecated / removed in production.
+//!! to be deprecated / removed pre-production.
 const handleSwitch = async (req, res) => {
   const switch_const = req.params.switch;
   switch (switch_const) {
@@ -247,8 +245,8 @@ const handleSwitch = async (req, res) => {
   }
 };
 
-//handler for router.delete-one.
-const handleDelete = async (req, res) => {
+//handler for router.deleteWord
+const handleDeleteWord = async (req, res) => {
   let word;
   try {
     word = await Words.findOne({ name: req.params.name });
@@ -262,6 +260,37 @@ const handleDelete = async (req, res) => {
       state: false,
       message: `Could not find resource ${err.message}`,
     });
+  }
+};
+
+//handler for router.deleteQuiz
+const handleDeleteQuiz = async (req, res) => {
+  const types = {
+    search: "search",
+    dict: "dict",
+  };
+  //todo: delete quizzes by another factor other than id.
+  switch (req.params.quiz) {
+    case types.search:
+      try {
+        const resp = await SearchQuiz.findOne({ _id: req.body.id });
+        const response = await resp.remove();
+        res.status(200).json({ state: true, data: response });
+      } catch (err) {
+        res.status(500).json({ state: false, message: err.message });
+      }
+      break;
+    case types.dict:
+      try {
+        const resp = await DictQuiz.findOne({ _id: req.body.id });
+        const response = await resp.remove();
+        res.status(200).json({ state: true, data: response });
+      } catch (err) {
+        res.status(500).json({ state: false, message: err.message });
+      }
+      break;
+    default:
+      break;
   }
 };
 
@@ -305,7 +334,8 @@ export {
   handleGetOne,
   handleGetState,
   handleSwitch,
-  handleDelete,
+  handleDeleteWord,
+  handleDeleteQuiz,
   handleDeleteAll,
   handlePatch,
   handleQuiz,
