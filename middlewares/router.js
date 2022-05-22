@@ -26,51 +26,6 @@ const handleBatchUpload = async (req, res) => {
   }
 };
 
-//handler for creating Search-quizzes.
-// const handleSearchQuiz = async (req, res, next) => {
-//   let response;
-//   const newQuiz = new SearchQuiz({
-//     question: req.body.question,
-//     answerRight: req.body.answerRight,
-//     answerWrong: req.body.answerWrong,
-//   });
-//   return newQuiz;
-//   // try {
-//   //   const null_response = await SearchQuiz.findOne({ name: newQuiz.name });
-//   //   if (
-//   //     null_response != null
-//   //       ? myError(`Resource already exists`)
-//   //       : ((response = await newQuiz.save()),
-//   //         res.status(200).json({ state: true, data: response }))
-//   //   );
-//   // } catch (err) {
-//   //   return res.status(500).json({ state: false, message: err.message });
-//   // }
-// };
-
-//handler for creating Dict-quizzes.
-// const handleDictQuiz = async (req, res, next) => {
-//   let response;
-//   const newQuiz = new DictQuiz({
-//     question: req.body.question,
-//     answerRight: req.body.answerRight,
-//     answerWrong1: req.body.answerWrong1,
-//     answerWrong2: req.body.answerWrong2,
-//   });
-//   return newQuiz;
-//   // try {
-//   //   const null_response = await DictQuiz.findOne({ name: newQuiz.name });
-//   //   if (
-//   //     null_response != null
-//   //       ? myError(`Resource already exists`)
-//   //       : ((response = await newQuiz.save()),
-//   //         res.status(200).json({ state: true, data: response }))
-//   //   );
-//   // } catch (err) {
-//   //   return res.status(500).json({ state: false, message: err.message });
-//   // }
-// };
-
 //general quiz post handler.
 const handleQuiz = async (req, res) => {
   const type = {
