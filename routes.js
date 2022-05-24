@@ -14,7 +14,7 @@ import {
   handleQuiz,
   handleSwitch,
   handleDeleteAll,
-} from "./middlewares/router.js";
+} from "./controllers/router.js";
 const router = Router();
 dotenv.config();
 
