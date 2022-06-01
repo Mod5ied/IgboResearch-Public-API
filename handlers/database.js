@@ -1,8 +1,8 @@
 "use strict";
 import mongoose from "mongoose";
-import { Words } from "../models/models.js";
 import { env } from "process";
 import { config } from "dotenv";
+import { Words } from "../models/words.js";
 config();
 
 let app_state;

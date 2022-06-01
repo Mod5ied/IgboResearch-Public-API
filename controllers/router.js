@@ -1,33 +1,28 @@
 "use strict";
-// import { Router } from "express";
+import { Words, Posts } from "../models/words.js";
 import { app_state } from "../handlers/database.js";
 import { AppWorkers } from "../handlers/database.js";
-import { Words, DictQuiz, SearchQuiz } from "../models/models.js";
+import { DictQuiz, SearchQuiz } from "../models/quiz.js";
 const { useOffline, useOnline } = AppWorkers;
 
 //handler for batch-uploads from offlineStore.
-const handleBatchUpload = async (req, res) => {
-  let post;
+export const handleBatchUpload = async (req, res) => {
+  /* if more than one exists, then we can deal with it later... */
+  /* handling this may brick the app down. */
+
+  // //! To fetch from the online Posts docs to the new Words doc:
+  // const staleWords = await Posts.find({});
+
   try {
-    post = await Words.create(req.body);
-    res.status(200).json({ state: true, data: post });
-    // req.body.forEach(async (obj) => {
-    //   //looks up and returns object that already exists.
-    //   post = await Posts.findOne({ name: obj.name });
-    // });
-    // if (post !== null) {
-    //   res
-    //     .status(400)
-    //     .json({ message: `At least one post already exists`, data: post });
-    // } else {
-    // }
+    const uploads = await Words.create(req.body);
+    res.status(200).json({ state: true, data: uploads });
   } catch (err) {
     res.status(500).send(err.message);
   }
 };
 
 //general quiz post handler.
-const handleQuiz = async (req, res) => {
+export const handleQuiz = async (req, res) => {
   const type = {
     search: "search",
     dict: "dict",
@@ -43,7 +38,7 @@ const handleQuiz = async (req, res) => {
       break;
     case type.dict:
       try {
-        const response = await DictQui.create(req.body);
+        const response = await DictQuiz.create(req.body);
         res.status(200).json({ state: true, data: response });
       } catch (err) {
         res.status(500).json({ state: false, message: err.message });
@@ -55,7 +50,7 @@ const handleQuiz = async (req, res) => {
 };
 
 //handler for router.post().
-const handlePost = async (req, res) => {
+export const handlePost = async (req, res) => {
   let response;
   const newWord = new Words({
     name: req.body.name,
@@ -83,9 +78,11 @@ const myError = (err) => {
 
 //handler for router.get().
 //todo: future: find words that match strings no matter if its not exact match.
-const handleGetWords = async (req, res) => {
+export const handleGetWords = async (req, res) => {
   try {
     const allWords = await Words.find({});
+    // //! To fetch from the online Posts docs to the new Words doc: ✅
+    // const staleWords = await Posts.find({});
     res.status(200).json({ state: true, data: allWords });
   } catch (err) {
     res
@@ -95,7 +92,7 @@ const handleGetWords = async (req, res) => {
 };
 
 //handler for router.getQuiz
-const handleGetQuiz = async (req, res) => {
+export const handleGetQuiz = async (req, res) => {
   const types = {
     search: "search",
     dict: "dict",
@@ -122,9 +119,8 @@ const handleGetQuiz = async (req, res) => {
   }
 };
 
-//handler for router.getOne.
 //todo: future: find words that match strings no matter if its not exact match.
-const handleGetOne = async (req, res) => {
+export const handleGetOne = async (req, res) => {
   let word;
   try {
     word = await Words.findOne({ name: req.params.name });
@@ -142,7 +138,7 @@ const handleGetOne = async (req, res) => {
 };
 
 //handler for router.get-state.
-const handleGetState = async (req, res) => {
+export const handleGetState = async (req, res) => {
   try {
     res.status(200).json(app_state);
   } catch (err) {
@@ -154,7 +150,7 @@ const handleGetState = async (req, res) => {
 
 //handler for router.get-switch.
 //!! to be deprecated / removed pre-production.
-const handleSwitch = async (req, res) => {
+export const handleSwitch = async (req, res) => {
   const switch_const = req.params.switch;
   switch (switch_const) {
     case "cloud":
@@ -200,8 +196,7 @@ const handleSwitch = async (req, res) => {
   }
 };
 
-//handler for router.deleteWord
-const handleDeleteWord = async (req, res) => {
+export const handleDeleteWord = async (req, res) => {
   let word;
   try {
     word = await Words.findOne({ name: req.params.name });
@@ -218,8 +213,7 @@ const handleDeleteWord = async (req, res) => {
   }
 };
 
-//handler for router.deleteQuiz
-const handleDeleteQuiz = async (req, res) => {
+export const handleDeleteQuiz = async (req, res) => {
   const types = {
     search: "search",
     dict: "dict",
@@ -249,8 +243,7 @@ const handleDeleteQuiz = async (req, res) => {
   }
 };
 
-//handler for router.deleteAll
-const handleDeleteAll = async (req, res) => {
+export const handleDeleteAll = async (req, res) => {
   try {
     const response = await Words.deleteMany({});
     res.status(200).json(response);
@@ -259,16 +252,15 @@ const handleDeleteAll = async (req, res) => {
   }
 };
 
-//handler for router.patch().
-const handlePatch = async (req, res) => {
+export const handleGenrePatch = async (req, res) => {
   let word;
   try {
-    word = await Words.findOne({ name: req.params.name });
+    word = await Words.findOne({ name: req.body.name });
     if (req.body.genre != null) {
-      post.genre = req.body.genre;
+      word.genre = req.body.genre;
       try {
         const updatedProps = await word.save();
-        res.json({ state: true, message: updatedProps });
+        res.json({ state: true, data: updatedProps });
       } catch (err) {
         return myError(`Failed to update - ${err.message}`);
       }
@@ -281,17 +273,23 @@ const handlePatch = async (req, res) => {
   }
 };
 
-export {
-  handleBatchUpload,
-  handlePost,
-  handleGetWords,
-  handleGetQuiz,
-  handleGetOne,
-  handleGetState,
-  handleSwitch,
-  handleDeleteWord,
-  handleDeleteQuiz,
-  handleDeleteAll,
-  handlePatch,
-  handleQuiz,
+export const handleTransPatch = async (req, res) => {
+  let word;
+  try {
+    word = await Words.findOne({ name: req.body.name });
+    if (req.body.translation != null) {
+      word.translation = req.body.translation;
+      try {
+        const updatedProps = await word.save();
+        res.json({ state: true, data: updatedProps });
+      } catch (err) {
+        return myError(`Failed to update - ${err.message}`);
+      }
+    }
+  } catch (err) {
+    res.status(404).json({
+      state: false,
+      message: `Could not update resource - ${err.message}`,
+    });
+  }
 };

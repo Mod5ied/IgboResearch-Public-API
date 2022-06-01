@@ -9,7 +9,8 @@ import {
   handleGetWords,
   handleGetQuiz,
   handleGetOne,
-  handlePatch,
+  handleGenrePatch,
+  handleTransPatch,
   handlePost,
   handleQuiz,
   handleSwitch,
@@ -18,9 +19,9 @@ import {
 const router = Router();
 dotenv.config();
 
-router.post("/post/:quiz", handleQuiz);
+router.post("/post/batch", handleBatchUpload);
 
-// router.post("/post/batch", handleBatchUpload);
+router.post("/post/:quiz", handleQuiz);
 
 router.post("/post", handlePost);
 
@@ -34,7 +35,9 @@ router.get("/get/state", handleGetState);
 
 router.get("/get/:switch", handleSwitch);
 
-router.patch("/update/:name", handlePatch);
+router.patch("/update/genre", handleGenrePatch);
+
+router.patch("/update/translation", handleTransPatch);
 
 //!! to be deprecated / removed pre-production.
 router.delete("/delete/wipe", handleDeleteAll);
