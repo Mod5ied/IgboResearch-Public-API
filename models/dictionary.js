@@ -1,6 +1,23 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
+const translation = new Schema({
+  commonTranslate: {
+    type: String,
+    trim: true,
+    required: true,
+    lowercase: true,
+  },
+  primitive: [
+    {
+      type: String,
+      trim: true,
+      required: true,
+      lowercase: true,
+    },
+  ],
+});
+
 const DictionarySchema = new Schema({
   name: {
     type: String,
@@ -8,14 +25,15 @@ const DictionarySchema = new Schema({
     trim: true,
     lowercase: true,
   },
-  answers: {
+  translation: [translation],
+  genre: {
     type: String,
     trim: true,
     lowercase: true,
   },
-  translations: [answers],
-  adjectives: [answers],
-  synonyms: [answers],
+  definitions: [String],
+  adjectives: [String],
+  synonyms: [String],
 });
 
 export const Dictionary = model("Dictionary", DictionarySchema);
