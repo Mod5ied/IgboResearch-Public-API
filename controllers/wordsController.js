@@ -1,37 +1,34 @@
+import { handleDelete } from "../handlers/deleteHandler.js";
+import { handleGet } from "../handlers/getHandler.js";
+import { handlePost } from "../handlers/postHandler.js";
+import { Words } from "../models/words.js";
+
 const myError = (err) => {
   throw new Error(err);
 };
 
 //handler for translator post operation:
 export const handlePostWord = async (req, res) => {
-  let response;
-  const newWord = new Words({
+  let postResponse;
+  const constant = {
     name: req.body.name,
-    translation: req.body.translation,
-    definitions: req.body.definitions,
     genre: req.body.genre,
-  });
-
+    translation: req.body.translation,
+  };
   try {
-    const null_response = await Words.findOne({ name: newWord.name });
-    if (
-      null_response !== null
-        ? myError(`Resource already exists`)
-        : ((response = await newWord.save()),
-          res.status(200).json({ state: true, data: response }))
-    );
+    postResponse = await handlePost(Words, constant);
+    if (postResponse) {
+      return res.status(200).json({ state: true, data: postResponse });
+    }
   } catch (err) {
     res.status(500).json({ state: false, message: err.message });
   }
 };
 //handler for translator get operation:
-//todo: future: find words that match strings no matter if its not exact match(maybe on the F.E).
 export const handleGetWords = async (req, res) => {
   try {
-    const allWords = await Words.find({});
-    // //! To fetch from the online Posts docs to the new Words doc: ✅
-    // const staleWords = await Posts.find({});
-    res.status(200).json({ state: true, data: allWords });
+    const getResponse = await handleGet(Words);
+    res.status(200).json({ state: true, data: getResponse });
   } catch (err) {
     res
       .status(500)
@@ -41,8 +38,8 @@ export const handleGetWords = async (req, res) => {
 //handler for translator delete operation:
 export const handleDeleteWord = async (req, res) => {
   try {
-    const word = await Words.findOne({ name: req.params.name });
-    const deleteResponse = await word.remove();
+    const constant = req.params.name;
+    const deleteResponse = await handleDelete(Words, constant);
     res.status(200).json({
       state: true,
       message: [`Resource was deleted`, deleteResponse],
@@ -50,7 +47,7 @@ export const handleDeleteWord = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       state: false,
-      message: `Could not find resource ${err.message}`,
+      message: `Could not find resource - ${err.message}`,
     });
   }
 };
@@ -69,7 +66,7 @@ export const handleGenrePatch = async (req, res) => {
       }
     }
   } catch (err) {
-    res.status(404).json({
+    res.status(500).json({
       state: false,
       message: `Could not update resource - ${err.message}`,
     });
@@ -98,7 +95,7 @@ export const handleTransPatch = async (req, res) => {
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-const handleBatchUpload = async (req, res) => {
+export const handleTransBatch = async (req, res) => {
   /* if more than one exists, then we can deal with it later... */
   /* handling this may brick the app down. */
   //todo: Try looping again next time, with B.S.O.N values.

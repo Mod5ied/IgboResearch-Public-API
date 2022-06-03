@@ -1,26 +1,28 @@
+import { handleDelete } from "../handlers/deleteHandler.js";
+import { handleGet } from "../handlers/getHandler.js";
+import { handlePost } from "../handlers/postHandler.js";
+import { Dictionary } from "../models/dictionary.js";
+
 const myError = (err) => {
   throw new Error(err);
 };
 
 //handler dictionary post operation:
 export const handlePostDict = async (req, res) => {
-  let response;
-  const newRecord = new Dictionary({
+  let postResponse;
+  const constant = {
     name: req.body.name,
-    translation: req.body.translation,
     genre: req.body.genre,
+    translation: req.body.translation,
     definitions: req?.body?.definitions,
     adjectives: req?.body?.adjectives,
     synonyms: req?.body?.synonyms,
-  });
+  };
   try {
-    const null_response = await Dictionary.findOne({ name: newRecord.name });
-    if (
-      null_response !== null
-        ? myError(`Resource already exists`)
-        : ((response = await newRecord.save()),
-          res.status(200).json({ state: true, data: response }))
-    );
+    postResponse = await handlePost(Dictionary, constant);
+    if (postResponse) {
+      return res.status(200).json({ state: true, data: postResponse });
+    }
   } catch (err) {
     res.status(500).json({ state: false, message: err.message });
   }
@@ -28,8 +30,8 @@ export const handlePostDict = async (req, res) => {
 //handler for dictionary get operation:
 export const getDictRecord = async (req, res) => {
   try {
-    const allRecords = await Dictionary.find({}).exec();
-    res.status(200).json({ state: true, data: allRecords });
+    const getResponse = await handleGet(Dictionary);
+    res.status(200).json({ state: true, data: getResponse });
   } catch (err) {
     res
       .status(500)
@@ -39,11 +41,11 @@ export const getDictRecord = async (req, res) => {
 //handler for dictionary delete operation:
 export const handleDeleteDict = async (req, res) => {
   try {
-    const record = await Dictionary.findOne({ name: req.params.name });
-    const resp = await record.remove();
+    const constant = req.params.name;
+    const deleteResponse = await handleDelete("Dictionary", constant);
     res.status(200).json({
       state: true,
-      message: [`Resource was deleted`, resp],
+      message: [`Resource was deleted`, deleteResponse],
     });
   } catch (err) {
     res.status(404).json({
@@ -59,16 +61,13 @@ const updateDictDefs = (req, res) => {};
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-const handleBatchUpload = async (req, res) => {
+export const handleDictBatch = async (req, res) => {
   /* if more than one exists, then we can deal with it later... */
   /* handling this may brick the app down. */
   //todo: Try looping again next time, with B.S.O.N values.
 
-  // //! To fetch from the online Posts docs to the new Words doc:
-  // const staleWords = await Posts.find({});
-
   try {
-    const uploads = await Words.create(req.body);
+    const uploads = await Dictionary.create(req.body);
     res.status(200).json({ state: true, data: uploads });
   } catch (err) {
     res.status(500).send(err.message);

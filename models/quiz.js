@@ -2,6 +2,9 @@ import pkg from "mongoose";
 const { Schema, model } = pkg;
 
 const SearchQuizSchema = new Schema({
+  // quizCode: {
+  //   //todo: a custom incrementer function here:
+  // },
   question: {
     type: String,
     required: true,
@@ -17,6 +20,9 @@ const SearchQuizSchema = new Schema({
   answerWrong: { type: String, trim: true, lowercase: true },
 });
 const DictQuizSchema = new Schema({
+  // quizCode: {
+  //   //todo: a custom incrementer function here:
+  // },
   question: {
     type: String,
     required: true,

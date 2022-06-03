@@ -1,26 +1,37 @@
+import { handleGet } from "../handlers/getHandler.js";
+import { handleQuizPost } from "../handlers/postHandler.js";
+import { handleQuizUpdate } from "../handlers/updateHandler.js";
+import { DictQuiz, SearchQuiz } from "../models/quiz.js";
+
 const myError = (err) => {
   throw new Error(err);
 };
 
 //handler for quiz create operation:
 export const handleCreateQuiz = async (req, res) => {
+  let postResponse;
   const type = {
     search: "search",
     dict: "dict",
   };
+  const constant = req.body;
   switch (req.params.quiz) {
     case type.search:
       try {
-        const response = await SearchQuiz.create(req.body);
-        res.status(200).json({ state: true, data: response });
-      } catch (error) {
+        postResponse = await handleQuizPost(SearchQuiz, constant);
+        if (postResponse) {
+          return res.status(200).json({ state: true, data: postResponse });
+        }
+      } catch (err) {
         res.status(500).json({ state: false, message: err.message });
       }
       break;
     case type.dict:
       try {
-        const response = await DictQuiz.create(req.body);
-        res.status(200).json({ state: true, data: response });
+        postResponse = await handleQuizPost(DictQuiz, constant);
+        if (postResponse) {
+          return res.status(200).json({ state: true, data: postResponse });
+        }
       } catch (err) {
         res.status(500).json({ state: false, message: err.message });
       }
@@ -35,19 +46,19 @@ export const handleGetQuiz = async (req, res) => {
     search: "search",
     dict: "dict",
   };
-  switch (req.params.allQuiz) {
+  switch (req.params.quiz) {
     case types.search:
       try {
-        const response = await SearchQuiz.find({});
-        res.status(200).json({ state: true, data: response });
+        const getResponse = await handleGet(SearchQuiz);
+        res.status(200).json({ state: true, data: getResponse });
       } catch (err) {
         res.status(500).json({ state: false, message: err.message });
       }
       break;
     case types.dict:
       try {
-        const response = await DictQuiz.find({});
-        res.status(200).json({ state: true, data: response });
+        const getResponse = await handleGet(DictQuiz);
+        res.status(200).json({ state: true, data: getResponse });
       } catch (err) {
         res.status(500).json({ state: false, message: err.message });
       }
@@ -63,6 +74,7 @@ export const handleDeleteQuiz = async (req, res) => {
     dict: "dict",
   };
   //todo: delete quizzes by another factor other than id.
+  //! until then, this contrler wont use the delete handler.
   switch (req.params.quiz) {
     case types.search:
       try {
@@ -88,11 +100,43 @@ export const handleDeleteQuiz = async (req, res) => {
 };
 //handler for quiz patch operation:
 //todo.
-const handleQuizPatch = async (req, res) => {};
+export const handleQuizPatch = async (req, res) => {
+  let updateResponse;
+  const constant = {
+    id: req.body.id,
+    answer: req.body.answer,
+    answerWrong: req.body.answerWrong,
+    answerWrong1: req.body.answerWrong1,
+    answerWrong2: req.body.answerWrong2,
+  };
+  try {
+    switch (req.params.quiz) {
+      case "search":
+        updateResponse = await handleQuizUpdate(SearchQuiz, constant);
+        if (updateResponse) {
+          return res.status(200).json({ state: true });
+        }
+        break;
+      case "dict":
+        updateResponse = await handleQuizUpdate(DictQuiz, constant);
+        if (updateResponse) {
+          return res.status(200).json({ state: true });
+        }
+        break;
+      default:
+        break;
+    }
+  } catch (err) {
+    res.status(500).json({
+      state: false,
+      message: `Could not update resource - ${err.message}`,
+    });
+  }
+};
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-const handleBatchUpload = async (req, res) => {
+export const handleQuizBatch = async (req, res) => {
   /* if more than one exists, then we can deal with it later... */
   /* handling this may brick the app down. */
   //todo: Try looping again next time, with B.S.O.N values.

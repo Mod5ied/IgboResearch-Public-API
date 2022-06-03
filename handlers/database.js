@@ -1,6 +1,5 @@
 "use strict";
 import mongoose from "mongoose";
-import { env } from "process";
 import { config } from "dotenv";
 config();
 
@@ -29,7 +28,7 @@ class DatabaseWorkers {
 
 async function startApp(app, port, local) {
   try {
-    await AppWorkers.useOffline(local);
+    await DatabaseWorkers.connectDb(local);
     app.listen(port, async () => {
       appState = true;
       console.log(`App is running on port ${port}`);
@@ -41,4 +40,4 @@ async function startApp(app, port, local) {
     });
   }
 }
-export { appState, DatabaseWorkers, AppWorkers, startApp };
+export { appState, DatabaseWorkers, startApp };
