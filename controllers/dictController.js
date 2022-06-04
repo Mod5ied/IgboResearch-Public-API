@@ -1,6 +1,7 @@
 import { handleDelete } from "../handlers/deleteHandler.js";
 import { handleGet } from "../handlers/getHandler.js";
 import { handlePost } from "../handlers/postHandler.js";
+import { handleQuiz } from "../handlers/updateHandler.js";
 import { Dictionary } from "../models/dictionary.js";
 
 const myError = (err) => {
@@ -8,7 +9,7 @@ const myError = (err) => {
 };
 
 //handler dictionary post operation:
-export const handlePostDict = async (req, res) => {
+export const postDictRecord = async (req, res) => {
   let postResponse;
   const constant = {
     name: req.body.name,
@@ -39,7 +40,7 @@ export const getDictRecord = async (req, res) => {
   }
 };
 //handler for dictionary delete operation:
-export const handleDeleteDict = async (req, res) => {
+export const deleteDictRecord = async (req, res) => {
   try {
     const constant = req.params.name;
     const deleteResponse = await handleDelete("Dictionary", constant);
@@ -56,12 +57,33 @@ export const handleDeleteDict = async (req, res) => {
 };
 //handlers for dictionary update operations:
 //todo: to update code soon...
-const updateDictTrans = (req, res) => {};
-const updateDictDefs = (req, res) => {};
+export const patchDictRecord = async (req, res) => {
+  let updatedResponse;
+  const constant = {
+    id: req.body.id,
+    name: req.body.name,
+    genre: req.body.genre,
+    translation: req.body.translation,
+    definitions: req.body.definitions,
+    adjectives: req.body.adjectives,
+    synonyms: req.body.synonyms,
+  };
+  try {
+    updatedResponse = await handleQuiz(Dictionary, constant);
+    if (updatedResponse) {
+      return res.status(200).json({ success: true });
+    }
+  } catch (err) {
+    res.status(500).json({
+      state: false,
+      message: `Could not update resource - ${err.message}`,
+    });
+  }
+};
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-export const handleDictBatch = async (req, res) => {
+export const batchUploadDict = async (req, res) => {
   /* if more than one exists, then we can deal with it later... */
   /* handling this may brick the app down. */
   //todo: Try looping again next time, with B.S.O.N values.

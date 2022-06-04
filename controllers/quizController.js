@@ -8,7 +8,7 @@ const myError = (err) => {
 };
 
 //handler for quiz create operation:
-export const handleCreateQuiz = async (req, res) => {
+export const createQuiz = async (req, res) => {
   let postResponse;
   const type = {
     search: "search",
@@ -41,7 +41,7 @@ export const handleCreateQuiz = async (req, res) => {
   }
 };
 //handler for quiz get operation:
-export const handleGetQuiz = async (req, res) => {
+export const getQuiz = async (req, res) => {
   const types = {
     search: "search",
     dict: "dict",
@@ -68,7 +68,7 @@ export const handleGetQuiz = async (req, res) => {
   }
 };
 //handler for  quiz delete operation:
-export const handleDeleteQuiz = async (req, res) => {
+export const deleteQuiz = async (req, res) => {
   const types = {
     search: "search",
     dict: "dict",
@@ -100,11 +100,11 @@ export const handleDeleteQuiz = async (req, res) => {
 };
 //handler for quiz patch operation:
 //todo.
-export const handleQuizPatch = async (req, res) => {
+export const patchQuiz = async (req, res) => {
   let updateResponse;
   const constant = {
     id: req.body.id,
-    answer: req.body.answer,
+    answerRight: req.body.answerRight,
     answerWrong: req.body.answerWrong,
     answerWrong1: req.body.answerWrong1,
     answerWrong2: req.body.answerWrong2,
@@ -114,13 +114,13 @@ export const handleQuizPatch = async (req, res) => {
       case "search":
         updateResponse = await handleQuizUpdate(SearchQuiz, constant);
         if (updateResponse) {
-          return res.status(200).json({ state: true });
+          return res.status(200).json({ success: true });
         }
         break;
       case "dict":
         updateResponse = await handleQuizUpdate(DictQuiz, constant);
         if (updateResponse) {
-          return res.status(200).json({ state: true });
+          return res.status(200).json({ success: true });
         }
         break;
       default:
@@ -136,7 +136,7 @@ export const handleQuizPatch = async (req, res) => {
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-export const handleQuizBatch = async (req, res) => {
+export const batchUploadQuiz = async (req, res) => {
   /* if more than one exists, then we can deal with it later... */
   /* handling this may brick the app down. */
   //todo: Try looping again next time, with B.S.O.N values.

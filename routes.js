@@ -4,62 +4,61 @@ import { Router } from "express";
 import { handleGetState } from "./controllers/stateController.js";
 import {
   getDictRecord,
-  handlePostDict,
-  handleDeleteDict,
+  postDictRecord,
+  patchDictRecord,
+  deleteDictRecord,
+  batchUploadDict
 } from "./controllers/dictController.js";
 import {
-  handleGetQuiz,
-  handleQuizBatch,
-  handleCreateQuiz,
-  handleDeleteQuiz,
-  handleQuizPatch,
+  getQuiz,
+  createQuiz,
+  patchQuiz,
+  deleteQuiz,
+  batchUploadQuiz,
 } from "./controllers/quizController.js";
 import {
-  handleGetWords,
-  handlePostWord,
-  handleTransPatch,
-  handleGenrePatch,
-  handleDeleteWord,
-  handleTransBatch,
+  getWords,
+  postWord,
+  patchWord,
+  deleteWord,
+  batchUploadWords,
 } from "./controllers/wordsController.js";
 
 const router = Router();
 dotenv.config();
 
-router.get("/allWords", handleGetWords);
+router.get("/allWords", getWords);
 
 router.get("/allRecords", getDictRecord);
 
-router.get("/quiz/:quiz", handleGetQuiz);
+router.get("/quiz/:quiz", getQuiz);
 
 // router.get("/:name", handleGetOne);
 
 router.get("/get/state", handleGetState);
 
-// router.get("/get/:switch", handleSwitch);
+router.post("/post/batch/dict", batchUploadDict);
 
-router.post("/post/batch/dict", handleQuizBatch);
+router.post("/post/batch/trans", batchUploadWords);
 
-router.post("/post/batch/trans", handleTransBatch);
+router.post("/post/batch/quiz", batchUploadQuiz);
 
-router.post("/post/batch/quiz", handleQuizBatch);
+router.post("/post/quiz/:quiz", createQuiz);
 
-router.post("/post/quiz/:quiz", handleCreateQuiz);
+router.post("/post/word", postWord);
 
-router.post("/post/word", handlePostWord);
+router.post("/post/dict", postDictRecord);
 
-router.post("/post/dict", handlePostDict);
+router.patch("/update/words", patchWord);
 
-router.patch("/update/genre", handleGenrePatch);
+router.patch("/update/dict", patchDictRecord);
 
-router.patch("/update/quiz/:quiz", handleQuizPatch);
+router.patch("/update/quiz/:quiz", patchQuiz);
 
-router.patch("/update/translation", handleTransPatch);
+router.delete("/delete/word/:name", deleteWord);
 
-router.delete("/delete/word/:name", handleDeleteWord);
+router.delete("/delete/dict/:name", deleteDictRecord);
 
-router.delete("/delete/dict/:name", handleDeleteDict);
-
-router.delete("/delete/quiz/:quiz", handleDeleteQuiz);
+router.delete("/delete/quiz/:quiz", deleteQuiz);
 
 export default router;

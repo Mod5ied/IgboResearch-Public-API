@@ -34,3 +34,9 @@ export const handleQuizPost = async (model = {}, constant = []) => {
   return myError(`Error occurred while saving a quiz`);
   //todo: see if can look through each for prior existence in document.
 };
+
+const handleBatchPost = () => {
+  /* while we're yet to figure out how to check if a batch's record
+     already exists, this feature lies within the "controllers" itself.
+  */
+};

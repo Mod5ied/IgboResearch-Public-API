@@ -1,6 +1,7 @@
 import { handleDelete } from "../handlers/deleteHandler.js";
 import { handleGet } from "../handlers/getHandler.js";
 import { handlePost } from "../handlers/postHandler.js";
+import { handleQuiz } from "../handlers/updateHandler.js";
 import { Words } from "../models/words.js";
 
 const myError = (err) => {
@@ -8,7 +9,7 @@ const myError = (err) => {
 };
 
 //handler for translator post operation:
-export const handlePostWord = async (req, res) => {
+export const postWord = async (req, res) => {
   let postResponse;
   const constant = {
     name: req.body.name,
@@ -25,7 +26,7 @@ export const handlePostWord = async (req, res) => {
   }
 };
 //handler for translator get operation:
-export const handleGetWords = async (req, res) => {
+export const getWords = async (req, res) => {
   try {
     const getResponse = await handleGet(Words);
     res.status(200).json({ state: true, data: getResponse });
@@ -36,7 +37,7 @@ export const handleGetWords = async (req, res) => {
   }
 };
 //handler for translator delete operation:
-export const handleDeleteWord = async (req, res) => {
+export const deleteWord = async (req, res) => {
   try {
     const constant = req.params.name;
     const deleteResponse = await handleDelete(Words, constant);
@@ -52,18 +53,18 @@ export const handleDeleteWord = async (req, res) => {
   }
 };
 //handler for translator update operations:
-export const handleGenrePatch = async (req, res) => {
-  let word;
+export const patchWord = async (req, res) => {
+  let updatedResponse;
+  const constant = {
+    id: req.body.id,
+    name: req.body.name,
+    genre: req.body.genre,
+    translation: req.body.translation,
+  };
   try {
-    word = await Words.findOne({ name: req.body.name });
-    if (req.body.genre != null) {
-      word.genre = req.body.genre;
-      try {
-        const updatedProps = await word.save();
-        res.json({ state: true, data: updatedProps });
-      } catch (err) {
-        return myError(`Failed to update - ${err.message}`);
-      }
+    updatedResponse = await handleQuiz(Words, constant);
+    if (updatedResponse) {
+      return res.status(200).json({ success: true });
     }
   } catch (err) {
     res.status(500).json({
@@ -72,30 +73,30 @@ export const handleGenrePatch = async (req, res) => {
     });
   }
 };
-export const handleTransPatch = async (req, res) => {
-  let word;
-  try {
-    word = await Words.findOne({ name: req.body.name });
-    if (req.body.translation != null) {
-      word.translation = req.body.translation;
-      try {
-        const updatedProps = await word.save();
-        res.json({ state: true, data: updatedProps });
-      } catch (err) {
-        return myError(`Failed to update - ${err.message}`);
-      }
-    }
-  } catch (err) {
-    res.status(404).json({
-      state: false,
-      message: `Could not update resource - ${err.message}`,
-    });
-  }
-};
+// export const handleTransPatch = async (req, res) => {
+//   let word;
+//   try {
+//     word = await Words.findOne({ name: req.body.name });
+//     if (req.body.translation != null) {
+//       word.translation = req.body.translation;
+//       try {
+//         const updatedProps = await word.save();
+//         res.json({ state: true, data: updatedProps });
+//       } catch (err) {
+//         return myError(`Failed to update - ${err.message}`);
+//       }
+//     }
+//   } catch (err) {
+//     res.status(404).json({
+//       state: false,
+//       message: `Could not update resource - ${err.message}`,
+//     });
+//   }
+// };
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-export const handleTransBatch = async (req, res) => {
+export const batchUploadWords = async (req, res) => {
   /* if more than one exists, then we can deal with it later... */
   /* handling this may brick the app down. */
   //todo: Try looping again next time, with B.S.O.N values.
