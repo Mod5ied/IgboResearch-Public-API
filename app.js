@@ -4,7 +4,7 @@ import { startApp } from "./handlers/database.js";
 import { env } from "process";
 import cors from "cors";
 import helmet from "helmet";
-const app = express();
+export const app = express();
 
 //middleware to simplify things
 app.use(cors());
@@ -37,3 +37,4 @@ app.use(function fiveHundredHandler(err, req, res, next) {
 
 //initialize database
 await startApp(app, env.port, env.local);
+

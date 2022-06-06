@@ -22,7 +22,7 @@ export const postWord = async (req, res) => {
       return res.status(200).json({ state: true, data: postResponse });
     }
   } catch (err) {
-    res.status(500).json({ state: false, message: err.message });
+    res.status(400).json({ state: false, message: err.message });
   }
 };
 //handler for translator get operation:
