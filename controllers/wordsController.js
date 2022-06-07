@@ -22,7 +22,9 @@ export const postWord = async (req, res) => {
       return res.status(200).json({ state: true, data: postResponse });
     }
   } catch (err) {
-    res.status(400).json({ state: false, message: err.message });
+    res
+      .status(err.statusCode || 400)
+      .json({ state: false, message: err.message });
   }
 };
 //handler for translator get operation:
@@ -32,7 +34,7 @@ export const getWords = async (req, res) => {
     res.status(200).json({ state: true, data: getResponse });
   } catch (err) {
     res
-      .status(500)
+      .status(err.statusCode || 404)
       .json({ state: false, message: `Not found - ${err.message}` });
   }
 };
@@ -67,7 +69,7 @@ export const patchWord = async (req, res) => {
       return res.status(200).json({ success: true });
     }
   } catch (err) {
-    res.status(500).json({
+    res.status(err.statusCode || 500).json({
       state: false,
       message: `Could not update resource - ${err.message}`,
     });
