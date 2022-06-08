@@ -15,13 +15,10 @@ export const handlePost = async (model = {}, constant = {}) => {
 
   const isExists = await model.findOne({ name: newRecord.name });
   if (isExists !== null) {
-    state = false;
-    myError(`Resource already exists`);
-    return;
+    return (state = false);
   }
   await newRecord.save();
-  state = true;
-  return state;
+  return (state = true);
 };
 
 export const handleQuizPost = async (model = {}, constant = []) => {
@@ -30,8 +27,8 @@ export const handleQuizPost = async (model = {}, constant = []) => {
   if (response) {
     return (state = true);
   }
-  state = false;
-  return myError(`Error occurred while saving a quiz`);
+  return (state = false);
+  // return myError(`Error occurred while saving a quiz`);
   //todo: see if can look through each for prior existence in document.
 };
 

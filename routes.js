@@ -7,7 +7,7 @@ import {
   postDictRecord,
   patchDictRecord,
   deleteDictRecord,
-  batchUploadDict
+  batchUploadDict,
 } from "./controllers/dictController.js";
 import {
   getQuiz,
@@ -18,6 +18,7 @@ import {
 } from "./controllers/quizController.js";
 import {
   getWords,
+  getOneWord,
   postWord,
   patchWord,
   deleteWord,
@@ -27,38 +28,41 @@ import {
 const router = Router();
 dotenv.config();
 
-router.get("/allWords", getWords);
+const use = fn => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
 
-router.get("/allRecords", getDictRecord);
+router.get("/allWords", use(getWords));
 
-router.get("/quiz/:quiz", getQuiz);
+router.get("/allRecords", use(getDictRecord));
 
-// router.get("/:name", handleGetOne);
+router.get("/quiz/:quiz", use(getQuiz));
 
-router.get("/get/state", handleGetState);
+router.get("/get/state", use(handleGetState));
 
-router.post("/post/batch/dict", batchUploadDict);
+router.get("/get/:name", use(getOneWord));
 
-router.post("/post/batch/trans", batchUploadWords);
+router.post("/post/batch/dict", use(batchUploadDict));
 
-router.post("/post/batch/quiz", batchUploadQuiz);
+router.post("/post/batch/words", use(batchUploadWords));
 
-router.post("/post/quiz/:quiz", createQuiz);
+router.post("/post/batch/:quiz", use(batchUploadQuiz));
 
-router.post("/post/word", postWord);
+router.post("/post/quiz/:quiz", use(createQuiz));
 
-router.post("/post/dict", postDictRecord);
+router.post("/post/word", use(postWord));
 
-router.patch("/update/words", patchWord);
+router.post("/post/dict", use(postDictRecord));
 
-router.patch("/update/dict", patchDictRecord);
+router.patch("/update/words", use(patchWord));
 
-router.patch("/update/quiz/:quiz", patchQuiz);
+router.patch("/update/dict", use(patchDictRecord));
 
-router.delete("/delete/word/:name", deleteWord);
+router.patch("/update/quiz/:quiz", use(patchQuiz));
 
-router.delete("/delete/dict/:name", deleteDictRecord);
+router.delete("/delete/word/:name", use(deleteWord));
 
-router.delete("/delete/quiz/:quiz", deleteQuiz);
+router.delete("/delete/dict/:name", use(deleteDictRecord));
+
+router.delete("/delete/quiz/:quiz", use(deleteQuiz));
 
 export default router;

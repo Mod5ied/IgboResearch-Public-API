@@ -17,14 +17,14 @@ config();
 import Router from "./routes.js";
 app.use("/api/v1/", Router);
 
-// Common error handlers
-app.use(function fourOhFourHandler(req, res, next) {
-  next(httpErrors(404, `Route not found: ${req.url}`));
-});
+// General error handlers
 app.use(function fiveHundredHandler(err, req, res, next) {
   if (err.status >= 500) {
     logger.error(err);
   }
+  // const newErr = errorHandler(errorMessage);
+  //parses the error message and returns a new error object(with custom message n' code).
+  // then the new error object is returned as response below.... OR NOT.
   res.status(err.status || 500).json({
     messages: [
       {
@@ -34,7 +34,9 @@ app.use(function fiveHundredHandler(err, req, res, next) {
     ],
   });
 });
+// app.use(function fourOhFourHandler(req, res, next) {
+//   next(createHttpError(404, `Route not found: ${req.url}`));
+// });
 
 //initialize database
 await startApp(app, env.port, env.local);
-

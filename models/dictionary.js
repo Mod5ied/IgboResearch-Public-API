@@ -24,6 +24,7 @@ const DictionarySchema = new Schema({
     required: true,
     trim: true,
     lowercase: true,
+    unique: true,
   },
   translation: [translation],
   genre: {

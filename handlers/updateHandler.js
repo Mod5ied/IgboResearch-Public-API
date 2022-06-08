@@ -2,7 +2,7 @@ const myError = (err) => {
   throw new Error(err);
 };
 
-export const handleQuiz = async (model, constant) => {
+export const handleUpdate = async (model, constant) => {
   let updateResponse;
   let toUpdate = await model.findOne({ name: constant.name });
   const keys = Object.keys(constant);
@@ -16,8 +16,8 @@ export const handleQuiz = async (model, constant) => {
     await toUpdate.save();
     return (updateResponse = true);
   }
-  updateResponse = false;
-  return myError(`Failed to update`);
+  return (updateResponse = false);
+  // return myError(`Failed to update`);
 };
 
 export const handleQuizUpdate = async (model, constant = {}) => {
@@ -33,6 +33,6 @@ export const handleQuizUpdate = async (model, constant = {}) => {
     await toUpdate.save();
     return (updateResponse = true);
   }
-  updateResponse = false;
-  return myError(`Failed to update`);
+  return (updateResponse = false);
+  // return myError(`Failed to update`);
 };

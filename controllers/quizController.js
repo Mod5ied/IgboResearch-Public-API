@@ -1,7 +1,9 @@
 import { handleGet } from "../handlers/getHandler.js";
 import { handleQuizPost } from "../handlers/postHandler.js";
 import { handleQuizUpdate } from "../handlers/updateHandler.js";
+import { Dictionary } from "../models/dictionary.js";
 import { DictQuiz, SearchQuiz } from "../models/quiz.js";
+import { Words } from "../models/words.js";
 
 const myError = (err) => {
   throw new Error(err);
@@ -144,10 +146,25 @@ export const batchUploadQuiz = async (req, res) => {
   // //! To fetch from the online Posts docs to the new Words doc:
   // const staleWords = await Posts.find({});
 
-  try {
-    const uploads = await Words.create(req.body);
-    res.status(200).json({ state: true, data: uploads });
-  } catch (err) {
-    res.status(500).send(err.message);
+  switch (req.params.quiz) {
+    case "search":
+      try {
+        const uploads = await SearchQuiz.create(req.body);
+        res.status(200).json({ state: true, data: uploads });
+      } catch (err) {
+        res.status(err.statusCode || 500).send(err.message);
+      }
+      break;
+    case "dict":
+      try {
+        const uploads = await DictQuiz.create(req.body);
+        res.status(200).json({ state: true, data: uploads });
+      } catch (err) {
+        res.status(err.statusCode || 500).send(err.message);
+      }
+      break;
+
+    default:
+      break;
   }
 };

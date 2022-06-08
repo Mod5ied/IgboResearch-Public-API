@@ -1,7 +1,7 @@
 import { handleDelete } from "../handlers/deleteHandler.js";
 import { handleGet } from "../handlers/getHandler.js";
 import { handlePost } from "../handlers/postHandler.js";
-import { handleQuiz } from "../handlers/updateHandler.js";
+import { handleUpdate } from "../handlers/updateHandler.js";
 import { Dictionary } from "../models/dictionary.js";
 
 const myError = (err) => {
@@ -69,7 +69,7 @@ export const patchDictRecord = async (req, res) => {
     synonyms: req.body.synonyms,
   };
   try {
-    updatedResponse = await handleQuiz(Dictionary, constant);
+    updatedResponse = await handleUpdate(Dictionary, constant);
     if (updatedResponse) {
       return res.status(200).json({ success: true });
     }

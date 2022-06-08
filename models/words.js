@@ -6,6 +6,7 @@ const WordsSchema = new mongoose.Schema({
     required: true,
     trim: true,
     lowercase: true,
+    unique: true,
   },
   translation: {
     type: String,
