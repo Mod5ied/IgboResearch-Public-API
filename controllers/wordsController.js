@@ -61,15 +61,16 @@ export const deleteWord = async (req, res) => {
 export const patchWord = async (req, res) => {
   let updatedResponse;
   const constant = {
-    id: req.body.id,
+    //todo: not patching.
     name: req.body.name,
-    genre: req.body.gene,
     translation: req.body.translation,
+    genre: req.body.gene,
   };
   updatedResponse = await handleUpdate(Words, constant);
-  if (updatedResponse) {
-    return res.status(200).json({ state: true });
+  if (!updatedResponse) {
+    return res.status(400).json({ state: false });
   }
+  return res.status(200).json({ state: true });
 };
 
 //handler for batch-uploads from offlineStore.

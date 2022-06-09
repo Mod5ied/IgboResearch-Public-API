@@ -28,7 +28,6 @@ export const handleQuizPost = async (model = {}, constant = []) => {
     return (state = true);
   }
   return (state = false);
-  // return myError(`Error occurred while saving a quiz`);
   //todo: see if can look through each for prior existence in document.
 };
 

@@ -17,7 +17,6 @@ export const handleUpdate = async (model, constant) => {
     return (updateResponse = true);
   }
   return (updateResponse = false);
-  // return myError(`Failed to update`);
 };
 
 export const handleQuizUpdate = async (model, constant = {}) => {
@@ -34,5 +33,4 @@ export const handleQuizUpdate = async (model, constant = {}) => {
     return (updateResponse = true);
   }
   return (updateResponse = false);
-  // return myError(`Failed to update`);
 };
