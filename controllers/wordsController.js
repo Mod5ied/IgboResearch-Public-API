@@ -61,10 +61,9 @@ export const deleteWord = async (req, res) => {
 export const patchWord = async (req, res) => {
   let updatedResponse;
   const constant = {
-    //todo: not patching.
     name: req.body.name,
-    translation: req.body.translation,
-    genre: req.body.gene,
+    translation: req?.body?.translation,
+    genre: req?.body?.genre,
   };
   updatedResponse = await handleUpdate(Words, constant);
   if (!updatedResponse) {

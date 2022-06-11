@@ -1,13 +1,10 @@
-const myError = (err) => {
-  throw new Error(err);
-};
-
 export const handleUpdate = async (model, constant) => {
   let updateResponse;
   let toUpdate = await model.findOne({ name: constant.name });
+
   const keys = Object.keys(constant);
   if (keys.length >= 2) {
-    toUpdate.name = constant?.name || toUpdate.name;
+    toUpdate.name = constant.name || toUpdate.name;
     toUpdate.genre = constant?.genre || toUpdate.genre;
     toUpdate.translation = constant?.translation || toUpdate.translation;
     toUpdate.definitions = constant?.definitions || toUpdate.definitions;
