@@ -1,9 +1,10 @@
-export const handleUpdate = async (model, constant) => {
+export const handleUpdate = async (model, constant = {}) => {
   let updateResponse;
   let toUpdate = await model.findOne({ name: constant.name });
 
-  const keys = Object.keys(constant);
-  if (keys.length >= 2) {
+  const values = Object.values(constant);
+
+  if (values[0] !== undefined) {
     toUpdate.name = constant.name || toUpdate.name;
     toUpdate.genre = constant?.genre || toUpdate.genre;
     toUpdate.translation = constant?.translation || toUpdate.translation;

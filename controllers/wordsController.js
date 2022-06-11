@@ -69,7 +69,7 @@ export const patchWord = async (req, res) => {
   if (!updatedResponse) {
     return res.status(400).json({ state: false });
   }
-  return res.status(200).json({ state: true });
+  return res.status(200).json({ state: true });                                                                                     
 };
 
 //handler for batch-uploads from offlineStore.

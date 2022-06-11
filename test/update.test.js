@@ -8,29 +8,36 @@ const { connectDb } = DatabaseWorkers;
 
 describe("UPDATES", () => {
   describe("Updates word based on category(genre or translation)", () => {
-    it("should fail to update words if entries are left blank", (done) => {
+    it("should persist records if entries are left blank, and returns false", (done) => {
       const constant = {};
       req
         .patch("/update/words")
         .send(constant)
         .then((res) => {
-          console.log(res.body);
-          //   expect(res.body.state).to.be.false;
+          const body = res.body;
+          console.log(body);
+          // expect(body.state).to.be.false;
+          done();
         })
         .catch((err) => done(err));
     });
-    // it("should update the word", (done) => {
-    //   const constant = {
-    //     name: "mother",
-    //     genre: "verb",
-    //     translation: "nne",
-    //   };
-    //   req
-    //     .patch("/update/words")
-    //     .send(constant)
-    //     .then((res) => {})
-    //     .catch((err) => done(err));
-    // });
+    it("should update the word and return true if entries are complete", (done) => {
+      const constant = {
+        "name": "mother",
+        "translation": "nne",
+        "genre": "verb",
+      };
+      req
+        .patch("/update/words")
+        .send(constant)
+        .then((res) => {
+          const body = res.body;
+          console.log(res);
+          // expect(body.state).to.be.true;
+          done();
+        })
+        .catch((err) => done(err));
+    });
   });
   //   describe("Updates dictionary based on category(genre or translation)", () => {
   //     it("should fail to update the dictionary if entries are left blank", () => {});
