@@ -2,10 +2,10 @@ export const handleDelete = async (model = {}, deleteConstant = "") => {
   let deleteResponse;
   const word = await model.findOne({ name: deleteConstant });
   if (word === null) {
-    return (deleteResponse = null);
+    return (deleteResponse = false);
   }
-  deleteResponse = await word.remove();
-  return deleteResponse;
+  await word.remove();
+  return (deleteResponse = true);
 };
 
 export const handleQuizDelete = async (model = {}, deleteCode = "") => {

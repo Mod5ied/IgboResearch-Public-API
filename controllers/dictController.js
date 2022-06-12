@@ -4,9 +4,6 @@ import { handlePost } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
 import { Dictionary } from "../models/dictionary.js";
 
-const myError = (err) => {
-  throw new Error(err);
-};
 
 //handler dictionary post operation:
 export const postDictRecord = async (req, res) => {
@@ -41,19 +38,18 @@ export const getDictRecord = async (req, res) => {
 };
 //handler for dictionary delete operation:
 export const deleteDictRecord = async (req, res) => {
-  try {
-    const constant = req.params.name;
-    const deleteResponse = await handleDelete("Dictionary", constant);
-    res.status(200).json({
-      state: true,
-      message: [`Resource was deleted`, deleteResponse],
-    });
-  } catch (err) {
-    res.status(404).json({
+  const constant = req.params.name;
+  const deleteResponse = await handleDelete(Dictionary, constant);
+  if (!deleteResponse) {
+    return res.status(404).json({
       state: false,
-      message: `Could not find resource ${err.message}`,
+      message: "Could not find resource",
     });
   }
+  return res.status(200).json({
+    state: true,
+    message: "Resource was deleted",
+  });
 };
 //handlers for dictionary update operations:
 //todo: to update code soon...

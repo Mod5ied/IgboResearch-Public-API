@@ -22,6 +22,9 @@ export const postWord = async (req, res) => {
 };
 //handler for translator get operation:
 export const getWords = async (req, res) => {
+  // if(req.params !== ""){
+  //   res.send("Parameter is wrong")
+  // }
   const getResponse = await handleGet(Words);
   if (getResponse === null) {
     return res.status(404).json({
@@ -46,7 +49,7 @@ export const getOneWord = async (req, res, next) => {
 export const deleteWord = async (req, res) => {
   const constant = req.params.name;
   const deleteResponse = await handleDelete(Words, constant);
-  if (deleteResponse === null) {
+  if (!deleteResponse) {
     return res.status(404).json({
       state: false,
       message: `Resource does not exist`,
@@ -67,7 +70,7 @@ export const patchWord = async (req, res) => {
   };
   updatedResponse = await handleUpdate(Words, constant);
   if (!updatedResponse) {
-    return res.status(400).json({ state: false });
+    return res.status(404).json({ state: false });
   }
   return res.status(200).json({ state: true });                                                                                     
 };
