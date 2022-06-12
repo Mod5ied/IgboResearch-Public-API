@@ -5,10 +5,6 @@ import { Dictionary } from "../models/dictionary.js";
 import { DictQuiz, SearchQuiz } from "../models/quiz.js";
 import { Words } from "../models/words.js";
 
-const myError = (err) => {
-  throw new Error(err);
-};
-
 //handler for quiz create operation:
 export const createQuiz = async (req, res) => {
   let postResponse;
@@ -111,28 +107,21 @@ export const patchQuiz = async (req, res) => {
     answerWrong1: req.body.answerWrong1,
     answerWrong2: req.body.answerWrong2,
   };
-  try {
-    switch (req.params.quiz) {
-      case "search":
-        updateResponse = await handleQuizUpdate(SearchQuiz, constant);
-        if (updateResponse) {
-          return res.status(200).json({ success: true });
-        }
-        break;
-      case "dict":
-        updateResponse = await handleQuizUpdate(DictQuiz, constant);
-        if (updateResponse) {
-          return res.status(200).json({ success: true });
-        }
-        break;
-      default:
-        break;
-    }
-  } catch (err) {
-    res.status(500).json({
-      state: false,
-      message: `Could not update resource - ${err.message}`,
-    });
+  switch (req.params.quiz) {
+    case "search":
+      updateResponse = await handleQuizUpdate(SearchQuiz, constant);
+      if (!updateResponse) {
+        return res.status(400).json({ state: false });
+      }
+      return res.status(200).json({ state: true });
+    case "dict":
+      updateResponse = await handleQuizUpdate(DictQuiz, constant);
+      if (!updateResponse) {
+        return res.status(400).json({ state: false });
+      }
+      return res.status(200).json({ state: true });
+    default:
+      break;
   }
 };
 

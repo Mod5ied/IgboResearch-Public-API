@@ -11,7 +11,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "mocha --exit"
+    "test": "mocha --recursive --exit"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

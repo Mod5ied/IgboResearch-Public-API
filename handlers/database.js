@@ -6,7 +6,6 @@ config();
 let appState;
 
 class DatabaseWorkers {
-
   static connectDb = async (local) => {
     let resp;
     try {
@@ -23,6 +22,9 @@ class DatabaseWorkers {
       console.log({ message: `Error connecting to MongoDB - ${err.message}` });
     }
     return resp;
+  };
+  static closeDb = async () => {
+    return mongoose.disconnect();
   };
 }
 

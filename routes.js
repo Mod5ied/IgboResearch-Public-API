@@ -28,7 +28,7 @@ import {
 const router = Router();
 dotenv.config();
 
-const use = fn => (req, res, next) =>
+const use = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
 router.get("/allWords", use(getWords));
@@ -51,7 +51,7 @@ router.post("/post/quiz/:quiz", use(createQuiz));
 
 router.post("/post/word", use(postWord));
 
-router.post("/post/dict", use(postDictRecord));
+router.post("/post/dict", use(postDictRecord)); /* In progress */
 
 router.patch("/update/words", use(patchWord));
 
