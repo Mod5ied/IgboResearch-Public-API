@@ -18,7 +18,7 @@ export const postWord = async (req, res) => {
       .status(400)
       .json({ state: false, message: `Resource already exists` });
   }
-  return res.status(200).json({ state: true, data: postResponse });
+  return res.status(200).json({ state: true });
 };
 //handler for translator get operation:
 export const getWords = async (req, res) => {
