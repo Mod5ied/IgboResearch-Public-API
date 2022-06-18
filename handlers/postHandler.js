@@ -1,7 +1,3 @@
-const myError = (err) => {
-  throw new Error(err);
-};
-
 export const handlePost = async (model = {}, constant = {}) => {
   let state;
   const newRecord = new model({
