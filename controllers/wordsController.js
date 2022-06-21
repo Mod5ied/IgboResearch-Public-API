@@ -3,6 +3,8 @@ import { handleGet, handleGetOne } from "../handlers/getHandler.js";
 import { handlePost } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
 import { Words } from "../models/words.js";
+import pino from "pino";
+const logger = pino();
 
 //handler for translator post operation:
 export const postWord = async (req, res) => {
@@ -39,6 +41,7 @@ export const getOneWord = async (req, res, next) => {
   const constant = req.params.name;
   const getResponse = await handleGetOne(Words, constant);
   if (getResponse === null) {
+    logger.info({ resCode: 404, message: getResponse });
     return res
       .status(404)
       .json({ state: false, message: `Resource does not exist` });
@@ -72,7 +75,7 @@ export const patchWord = async (req, res) => {
   if (!updatedResponse) {
     return res.status(404).json({ state: false });
   }
-  return res.status(200).json({ state: true });                                                                                     
+  return res.status(200).json({ state: true });
 };
 
 //handler for batch-uploads from offlineStore.
