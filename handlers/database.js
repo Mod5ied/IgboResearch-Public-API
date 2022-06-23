@@ -1,6 +1,8 @@
 "use strict";
 import mongoose from "mongoose";
 import { config } from "dotenv";
+import { ApiError } from "../errors/errorParser.js";
+import logger from "../utils/log/logger.js";
 config();
 
 let appState;
@@ -12,34 +14,33 @@ class DatabaseWorkers {
       await mongoose.connect(local);
       mongoose.connection.on("error", (err) => {
         appState = false;
-        console.error({ message: `${err.message}` });
+        logger.error({ message: `${err.message}` });
       });
-      mongoose.connection.on("connected", () => {
-        console.log({ message: `Connected to MongoDB` });
+      mongoose.connection.once("connected", () => {
+        logger.info(`Connected to MongoDB`);
         resp = true;
       });
     } catch (err) {
-      console.log({ message: `Error connecting to MongoDB - ${err.message}` });
+      logger.error(`Error connecting to MongoDB - ${err.message}`);
     }
     return resp;
   };
   static closeDb = async () => {
-    return mongoose.disconnect();
+    mongoose.connection.close();
+    mongoose.disconnect();
+    return;
   };
 }
 
 async function startApp(app, port, local) {
-  try {
-    await DatabaseWorkers.connectDb(local);
-    app.listen(port, async () => {
-      appState = true;
-      console.log(`App is running on port ${port}`);
-    });
-  } catch (err) {
-    console.error({
-      code: err.code || "InternalServerError",
-      message: `Error starting app - ${err.message}`,
-    });
-  }
+  await DatabaseWorkers.connectDb(local);
+  app.listen(port, async (err, next) => {
+    if (err) {
+      logger.fatal(`${err.message} - Error starting app`);
+      return next(ApiError.internalError(err.message || `Error starting app`));
+    }
+    appState = true;
+    logger.info(`App is running on port`);
+  });
 }
 export { appState, DatabaseWorkers, startApp };

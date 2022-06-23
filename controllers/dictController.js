@@ -2,11 +2,11 @@ import { handleDelete } from "../handlers/deleteHandler.js";
 import { handleGet } from "../handlers/getHandler.js";
 import { handlePost } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
+import { ApiError } from "../errors/errorParser.js";
 import { Dictionary } from "../models/dictionary.js";
 
-
 //handler dictionary post operation:
-export const postDictRecord = async (req, res) => {
+export const postDictRecord = async (req, res, next) => {
   let postResponse;
   const constant = {
     name: req.body.name,
@@ -16,44 +16,40 @@ export const postDictRecord = async (req, res) => {
     adjectives: req?.body?.adjectives,
     synonyms: req?.body?.synonyms,
   };
-  try {
-    postResponse = await handlePost(Dictionary, constant);
-    if (postResponse) {
-      return res.status(200).json({ state: true, data: postResponse });
-    }
-  } catch (err) {
-    res.status(500).json({ state: false, message: err.message });
+  postResponse = await handlePost(Dictionary, constant);
+  if (!postResponse) {
+    return next(ApiError.badRequest(`Resource already exists`));
   }
+  res.status(200).json({ state: true }).data = {
+    msg: `Resource created`,
+    data: postResponse,
+  };
+  next();
 };
 //handler for dictionary get operation:
-export const getDictRecord = async (req, res) => {
-  try {
-    const getResponse = await handleGet(Dictionary);
-    res.status(200).json({ state: true, data: getResponse });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ state: false, message: `Not found - ${err.message}` });
+export const getDictRecord = async (req, res, next) => {
+  const getResponse = await handleGet(Dictionary);
+  if (getResponse === null) {
+    return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
+  res.status(200).json({ state: true, data: getResponse }).data = getResponse;
 };
 //handler for dictionary delete operation:
-export const deleteDictRecord = async (req, res) => {
+export const deleteDictRecord = async (req, res, next) => {
   const constant = req.params.name;
   const deleteResponse = await handleDelete(Dictionary, constant);
   if (!deleteResponse) {
-    return res.status(404).json({
-      state: false,
-      message: "Could not find resource",
-    });
+    return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
-  return res.status(200).json({
+  res.status(200).json({
     state: true,
-    message: "Resource was deleted",
-  });
+    message: `Resource was deleted`,
+  }).data = `Resource was deleted`;
+  next();
 };
 //handlers for dictionary update operations:
 //todo: to update code soon...
-export const patchDictRecord = async (req, res) => {
+export const patchDictRecord = async (req, res, next) => {
   let updatedResponse;
   const constant = {
     id: req.body.id,
@@ -64,17 +60,12 @@ export const patchDictRecord = async (req, res) => {
     adjectives: req.body.adjectives,
     synonyms: req.body.synonyms,
   };
-  try {
-    updatedResponse = await handleUpdate(Dictionary, constant);
-    if (updatedResponse) {
-      return res.status(200).json({ success: true });
-    }
-  } catch (err) {
-    res.status(500).json({
-      state: false,
-      message: `Could not update resource - ${err.message}`,
-    });
+  updatedResponse = await handleUpdate(Dictionary, constant);
+  if (!updatedResponse) {
+    return next(ApiError.notFoundRequest(`Resource does not exists`));
   }
+  res.status(200).json({ state: true }).data = updatedResponse;
+  next();
 };
 
 //handler for batch-uploads from offlineStore.
@@ -84,10 +75,6 @@ export const batchUploadDict = async (req, res) => {
   /* handling this may brick the app down. */
   //todo: Try looping again next time, with B.S.O.N values.
 
-  try {
-    const uploads = await Dictionary.create(req.body);
-    res.status(200).json({ state: true, data: uploads });
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+  const uploads = await Dictionary.create(req.body);
+  res.status(200).json({ state: true, data: uploads }).data = uploads;
 };

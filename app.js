@@ -18,9 +18,9 @@ config();
 import Router from "./routes.js";
 app.use("/api/v1/", Router);
 
+//initialize database
+await startApp(app, env.port, env.local);
 
 // General error handlers
 app.use(errorHandler)
 
-//initialize database
-await startApp(app, env.port, env.local);

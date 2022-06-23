@@ -13,8 +13,7 @@ export const handlePost = async (model = {}, constant = {}) => {
   if (isExists !== null) {
     return (state = false);
   }
-  await newRecord.save();
-  return (state = true);
+  return (state = await newRecord.save());
 };
 
 export const handleQuizPost = async (model = {}, constant = []) => {

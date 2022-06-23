@@ -2,12 +2,11 @@ import { handleDelete } from "../handlers/deleteHandler.js";
 import { handleGet, handleGetOne } from "../handlers/getHandler.js";
 import { handlePost } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
+import { ApiError } from "../errors/errorParser.js";
 import { Words } from "../models/words.js";
-import pino from "pino";
-const logger = pino();
 
 //handler for translator post operation:
-export const postWord = async (req, res) => {
+export const postWord = async (req, res, next) => {
   let postResponse;
   const constant = {
     name: req.body.name,
@@ -16,11 +15,13 @@ export const postWord = async (req, res) => {
   };
   postResponse = await handlePost(Words, constant);
   if (!postResponse) {
-    return res
-      .status(400)
-      .json({ state: false, message: `Resource already exists` });
+    return next(ApiError.badRequest(`Resource already exists`));
   }
-  return res.status(200).json({ state: true });
+  res.status(200).json({ state: true }).data = {
+    msg: `Resource created`,
+    data: postResponse,
+  };
+  next();
 };
 //handler for translator get operation:
 export const getWords = async (req, res) => {
@@ -29,39 +30,33 @@ export const getWords = async (req, res) => {
   // }
   const getResponse = await handleGet(Words);
   if (getResponse === null) {
-    return res.status(404).json({
-      state: false,
-      message: `Resource does not exist`,
-    });
+    return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
-  res.status(200).json({ state: true, data: getResponse });
+  res.status(200).json({ state: true, data: getResponse }).data = getResponse;
+  next();
 };
 //handler for translator getOne operation:
 export const getOneWord = async (req, res, next) => {
   const constant = req.params.name;
   const getResponse = await handleGetOne(Words, constant);
   if (getResponse === null) {
-    logger.info({ resCode: 404, message: getResponse });
-    return res
-      .status(404)
-      .json({ state: false, message: `Resource does not exist` });
+    return next(ApiError.notFoundRequest(`Resource does not exists`));
   }
-  return res.status(200).json({ state: true, data: getResponse });
+  res.status(200).json({ state: true, data: getResponse }).data = getResponse;
+  next();
 };
 //handler for translator delete operation:
-export const deleteWord = async (req, res) => {
+export const deleteWord = async (req, res, next) => {
   const constant = req.params.name;
   const deleteResponse = await handleDelete(Words, constant);
   if (!deleteResponse) {
-    return res.status(404).json({
-      state: false,
-      message: `Resource does not exist`,
-    });
+    return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
-  return res.status(200).json({
+  res.status(200).json({
     state: true,
     message: `Resource was deleted`,
-  });
+  }).data = `Resource was deleted`;
+  next();
 };
 //handler for translator update operations:
 export const patchWord = async (req, res) => {
@@ -73,9 +68,10 @@ export const patchWord = async (req, res) => {
   };
   updatedResponse = await handleUpdate(Words, constant);
   if (!updatedResponse) {
-    return res.status(404).json({ state: false });
+    return next(ApiError.notFoundRequest(`Resource does not exists`));
   }
-  return res.status(200).json({ state: true });
+  res.status(200).json({ state: true }).data = updatedResponse;
+  next();
 };
 
 //handler for batch-uploads from offlineStore.
@@ -89,5 +85,6 @@ export const batchUploadWords = async (req, res, next) => {
   // const staleWords = await Posts.find({});
 
   const uploads = await Words.create(req.body);
-  res.status(200).json({ state: true, data: uploads });
+
+  res.status(200).json({ state: true, data: uploads }).data = uploads;
 };
