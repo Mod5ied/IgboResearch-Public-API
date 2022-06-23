@@ -1,6 +1,6 @@
 import { handleDelete } from "../handlers/deleteHandler.js";
-import { handleGet } from "../handlers/getHandler.js";
-import { handlePost } from "../handlers/postHandler.js";
+import { handleGet, handleGetOne } from "../handlers/getHandler.js";
+import { handlePostDict } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
 import { ApiError } from "../errors/errorParser.js";
 import { Dictionary } from "../models/dictionary.js";
@@ -10,13 +10,13 @@ export const postDictRecord = async (req, res, next) => {
   let postResponse;
   const constant = {
     name: req.body.name,
-    genre: req.body.genre,
     translation: req.body.translation,
-    definitions: req?.body?.definitions,
-    adjectives: req?.body?.adjectives,
-    synonyms: req?.body?.synonyms,
+    genre: req.body.genre,
+    definitions: req.body.definitions,
+    adjectives: req.body.adjectives,
+    synonyms: req.body.synonyms,
   };
-  postResponse = await handlePost(Dictionary, constant);
+  postResponse = await handlePostDict(constant);
   if (!postResponse) {
     return next(ApiError.badRequest(`Resource already exists`));
   }
@@ -33,6 +33,17 @@ export const getDictRecord = async (req, res, next) => {
     return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
   res.status(200).json({ state: true, data: getResponse }).data = getResponse;
+};
+
+//handler for getOne operations.
+export const getOneRecord = async (req, res, next) => {
+  const constant = req.params.record;
+  const getResponse = await handleGetOne(Dictionary, constant);
+  if (getResponse === null) {
+    return next(ApiError.notFoundRequest(`Resource does not exists`));
+  }
+  res.status(200).json({ state: true, data: getResponse }).data = getResponse;
+  next();
 };
 //handler for dictionary delete operation:
 export const deleteDictRecord = async (req, res, next) => {
@@ -70,11 +81,10 @@ export const patchDictRecord = async (req, res, next) => {
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-export const batchUploadDict = async (req, res) => {
-  /* if more than one exists, then we can deal with it later... */
-  /* handling this may brick the app down. */
-  //todo: Try looping again next time, with B.S.O.N values.
-
+export const batchUploadDict = async (req, res, next) => {
+  //* Logs a E11000 duplicate key error collection if redundancy is attempted.
   const uploads = await Dictionary.create(req.body);
+
   res.status(200).json({ state: true, data: uploads }).data = uploads;
+  next();
 };

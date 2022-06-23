@@ -14,8 +14,8 @@ const WordsSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  //todo: would be required after we setup apps dictionary
-  definitions: {
+  //* For example (Computing, Farming, Education, etc.)
+  group: {
     type: String,
     trim: true,
     lowercase: true,

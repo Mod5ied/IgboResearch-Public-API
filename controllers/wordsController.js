@@ -1,6 +1,6 @@
 import { handleDelete } from "../handlers/deleteHandler.js";
 import { handleGet, handleGetOne } from "../handlers/getHandler.js";
-import { handlePost } from "../handlers/postHandler.js";
+import { handlePostWords } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
 import { ApiError } from "../errors/errorParser.js";
 import { Words } from "../models/words.js";
@@ -13,7 +13,7 @@ export const postWord = async (req, res, next) => {
     genre: req.body.genre,
     translation: req.body.translation,
   };
-  postResponse = await handlePost(Words, constant);
+  postResponse = await handlePostWords(Words, constant);
   if (!postResponse) {
     return next(ApiError.badRequest(`Resource already exists`));
   }
@@ -32,8 +32,7 @@ export const getWords = async (req, res) => {
   if (getResponse === null) {
     return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
-  res.status(200).json({ state: true, data: getResponse }).data = getResponse;
-  next();
+  res.status(200).json({ state: true, data: getResponse });
 };
 //handler for translator getOne operation:
 export const getOneWord = async (req, res, next) => {
@@ -77,14 +76,11 @@ export const patchWord = async (req, res) => {
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
 export const batchUploadWords = async (req, res, next) => {
-  /* if more than one exists, then we can deal with it later... */
-  /* handling this may brick the app down. */
-  //todo: Try looping again next time, with B.S.O.N values.
-
+  //* Logs a E11000 duplicate key error collection if redundancy is attempted.
   // //! To fetch from the online Posts docs to the new Words doc:
   // const staleWords = await Posts.find({});
-
   const uploads = await Words.create(req.body);
 
   res.status(200).json({ state: true, data: uploads }).data = uploads;
+  next();
 };

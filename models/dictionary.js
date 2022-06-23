@@ -1,7 +1,6 @@
-import mongoose from "mongoose";
-const { Schema, model } = mongoose;
+import { default as mongoose } from "mongoose";
 
-const translation = new Schema({
+const translation = new mongoose.Schema({
   commonTranslate: {
     type: String,
     trim: true,
@@ -18,7 +17,7 @@ const translation = new Schema({
   ],
 });
 
-const DictionarySchema = new Schema({
+const DictionarySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -35,6 +34,7 @@ const DictionarySchema = new Schema({
   definitions: [String],
   adjectives: [String],
   synonyms: [String],
+  antonyms: [String]
 });
 
-export const Dictionary = model("Dictionary", DictionarySchema);
+export const Dictionary = mongoose.model("Dictionary", DictionarySchema);

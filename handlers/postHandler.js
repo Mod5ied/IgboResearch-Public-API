@@ -1,15 +1,32 @@
-export const handlePost = async (model = {}, constant = {}) => {
+import { Dictionary } from "../models/dictionary.js";
+import { Words } from "../models/words.js";
+
+export const handlePostWords = async (constant) => {
   let state;
-  const newRecord = new model({
+  const newRecord = new Words({
     name: constant.name,
     genre: constant.genre,
     translation: constant.translation,
-    definitions: constant?.definitions,
-    adjectives: constant?.adjectives,
-    synonyms: constant?.synonyms,
   });
 
-  const isExists = await model.findOne({ name: newRecord.name });
+  const isExists = await Words.findOne({ name: newRecord.name });
+  if (isExists !== null) {
+    return (state = false);
+  }
+  return (state = await newRecord.save());
+};
+
+export const handlePostDict = async (constant) => {
+  let state;
+  const newRecord = new Dictionary({
+    name: constant.name,
+    genre: constant.genre,
+    translation: constant.translation,
+    definitions: constant.definitions,
+    adjectives: constant.adjectives,
+    synonyms: constant.synonyms,
+  });
+  const isExists = await Dictionary.findOne({ name: newRecord.name });
   if (isExists !== null) {
     return (state = false);
   }
@@ -27,7 +44,5 @@ export const handleQuizPost = async (model = {}, constant = []) => {
 };
 
 const handleBatchPost = () => {
-  /* while we're yet to figure out how to check if a batch's record
-     already exists, this feature lies within the "controllers" itself.
-  */
+  //todo...
 };

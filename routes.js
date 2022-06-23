@@ -8,6 +8,7 @@ import {
   patchDictRecord,
   deleteDictRecord,
   batchUploadDict,
+  getOneRecord,
 } from "./controllers/dictController.js";
 import {
   getQuiz,
@@ -40,7 +41,9 @@ router.get("/quiz/:quiz", [use(getQuiz), use(saveLogs)]);
 
 router.get("/get/app_state", [use(handleGetState), use(saveLogs)]);
 
-router.get("/get/:name", [use(getOneWord), use(saveLogs)]);
+router.get("/get/word/:name", [use(getOneWord), use(saveLogs)]);
+
+router.get("/get/dict/:record", [use(getOneRecord), use(saveLogs)]);
 
 router.post("/post/batch/dict", [use(batchUploadDict), use(saveLogs)]);
 
@@ -50,9 +53,9 @@ router.post("/post/batch/:quiz", [use(batchUploadQuiz), use(saveLogs)]);
 
 router.post("/post/quiz/:quiz", [use(createQuiz), use(saveLogs)]);
 
-router.post("/post/word", [use(postWord), use(saveLogs)]);
-
 router.post("/post/dict", [use(postDictRecord), use(saveLogs)]); /* In progress */
+
+router.post("/post/word", [use(postWord), use(saveLogs)]);
 
 router.patch("/update/words", [use(patchWord), use(saveLogs)]);
 
