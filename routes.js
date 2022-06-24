@@ -45,7 +45,7 @@ router.get("/get/word/:name", [use(getOneWord), use(saveLogs)]);
 
 router.get("/get/dict/:record", [use(getOneRecord), use(saveLogs)]);
 
-router.post("/post/batch/dict", [batchUploadDict, saveLogs]);
+router.post("/post/batch/records", [batchUploadDict, saveLogs]);
 
 router.post("/post/batch/words", [batchUploadWords, saveLogs]);
 

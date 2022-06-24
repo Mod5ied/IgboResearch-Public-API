@@ -1,6 +1,6 @@
 import { ApiError } from "../errors/errorParser.js";
 import { handleGet } from "../handlers/getHandler.js";
-import { handleQuizPost } from "../handlers/postHandler.js";
+import { handleBatchPost, handleQuizPost } from "../handlers/postHandler.js";
 import { handleQuizUpdate } from "../handlers/updateHandler.js";
 import { DictQuiz, SearchQuiz } from "../models/quiz.js";
 
@@ -97,8 +97,11 @@ export const deleteQuiz = async (req, res, next) => {
   }
 };
 //handler for quiz patch operation:
-//todo.
 export const patchQuiz = async (req, res) => {
+  const types = ["search", "dict"];
+  if (!types.includes(req.params.quiz)) {
+    return next(ApiError.notAvailableRequest("Path is invalid"));
+  }
   let updateResponse;
   const constant = {
     id: req.body.id,
@@ -108,52 +111,51 @@ export const patchQuiz = async (req, res) => {
     answerWrong2: req.body.answerWrong2,
   };
   switch (req.params.quiz) {
-    case "search":
+    case types[0]:
       updateResponse = await handleQuizUpdate(SearchQuiz, constant);
       if (!updateResponse) {
         return res.status(400).json({ state: false });
       }
       return res.status(200).json({ state: true });
-    case "dict":
+    case types[1]:
       updateResponse = await handleQuizUpdate(DictQuiz, constant);
       if (!updateResponse) {
         return res.status(400).json({ state: false });
       }
       return res.status(200).json({ state: true });
     default:
-      break;
+      return next(ApiError.methodNotImplemented("Request is unknown"));
   }
 };
 
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
-export const batchUploadQuiz = async (req, res) => {
-  /* if more than one exists, then we can deal with it later... */
-  /* handling this may brick the app down. */
-  //todo: Try looping again next time, with B.S.O.N values.
-
-  // //! To fetch from the online Posts docs to the new Words doc:
+export const batchUploadQuiz = async (req, res, next) => {
+  const types = ["search", "dict"];
+  if (!types.includes(req.params.quiz)) {
+    return next(ApiError.notAvailableRequest("Path is invalid"));
+  }
+  let uploads;
+  const constants = req.body;
+  //! To fetch from the online Posts docs to the new Words doc:
   // const staleWords = await Posts.find({});
-
   switch (req.params.quiz) {
-    case "search":
-      try {
-        const uploads = await SearchQuiz.create(req.body);
-        res.status(200).json({ state: true, data: uploads });
-      } catch (err) {
-        res.status(err.statusCode || 500).send(err.message);
+    case types[0]:
+      uploads = await handleBatchPost(SearchQuiz, constants);
+      if (!uploads) return next(ApiError.badRequest("Resource already exists"));
+      return res.status(200).json({ state: true, data: uploads }).data = {
+        msg: `Resources in batch upload success`,
+        data: uploads,
       }
-      break;
-    case "dict":
-      try {
-        const uploads = await DictQuiz.create(req.body);
-        res.status(200).json({ state: true, data: uploads });
-      } catch (err) {
-        res.status(err.statusCode || 500).send(err.message);
+    case types[1]:
+      uploads = await handleBatchPost(DictQuiz, constants);
+      if (!uploads) return next(ApiError.badRequest("Resource already exists"));
+      return (res.status(200).json({ state: true, data: uploads })).data = {
+        msg: `Resources in batch upload success`,
+        data: uploads,
       }
-      break;
 
     default:
-      break;
+      return next(ApiError.methodNotImplemented("Request is unknown"));
   }
 };

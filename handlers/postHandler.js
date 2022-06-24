@@ -45,6 +45,13 @@ export const handleQuizPost = async (model = {}, constant) => {
   return (state = true);
 };
 
-const handleBatchPost = () => {
-  //todo...
+export const handleBatchPost = async (model, constants) => {
+  let state;
+  //* bcos of the unique prop, we don't check for duplicates.
+  const resp = await model.create(constants);
+  if(!resp){
+    //* duplicates come to us! 😎
+    return (state = false);
+  }
+  return (state = true);
 };
