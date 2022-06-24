@@ -21,19 +21,19 @@ export const createQuiz = async (req, res, next) => {
         msg: `Resource created`,
         data: postResponse,
       };
-      return next()
+      return next();
     case types[1]:
-      try {
-        postResponse = await handleQuizPost(DictQuiz, req.body);
-        if (postResponse) {
-          return res.status(200).json({ state: true, data: postResponse });
-        }
-      } catch (err) {
-        res.status(500).json({ state: false, message: err.message });
+      postResponse = await handleQuizPost(DictQuiz, req.body);
+      if (!postResponse) {
+        return next(ApiError.badRequest(`Resource already exists`));
       }
-      break;
+      res.status(200).json({ state: true, data: postResponse }).data = {
+        msg: `Resource created`,
+        data: postResponse,
+      };
+      return next();
     default:
-      break;
+      return next(ApiError.methodNotImplemented("Request is unknown"));
   }
 };
 //handler for quiz get operation:

@@ -8,6 +8,9 @@ import logger from "../utils/log/logger.js";
 
 //handler for translator post operation:
 export const postWord = async (req, res, next) => {
+  if (req.params === null) {
+    return next(ApiError.notAvailableRequest("Path is invalid"));
+  }
   let postResponse;
   const constant = {
     name: req.body.name,
@@ -25,10 +28,7 @@ export const postWord = async (req, res, next) => {
   next();
 };
 //handler for translator get operation:
-export const getWords = async (req, res) => {
-  // if (req.params === "") {
-  //   return next(ApiError.notAvailableRequest("Path is invalid"));
-  // }
+export const getWords = async (req, res, next) => {
   const getResponse = await handleGet(Words);
   if (getResponse === null) {
     return next(ApiError.notFoundRequest(`Resource does not exist`));
@@ -37,6 +37,9 @@ export const getWords = async (req, res) => {
 };
 //handler for translator getOne operation:
 export const getOneWord = async (req, res, next) => {
+  if (req.params.name.length <= 1) {
+    return next(ApiError.badRequest("Path is invalid"));
+  }
   const constant = req.params.name;
   const getResponse = await handleGetOne(Words, constant);
   if (getResponse === null) {
@@ -47,6 +50,9 @@ export const getOneWord = async (req, res, next) => {
 };
 //handler for translator delete operation:
 export const deleteWord = async (req, res, next) => {
+  if (req.params.name === null) {
+    return next(ApiError.notAvailableRequest("Path is invalid"));
+  }
   const constant = req.params.name;
   const deleteResponse = await handleDelete(Words, constant);
   if (!deleteResponse) {

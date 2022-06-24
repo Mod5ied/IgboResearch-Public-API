@@ -35,16 +35,14 @@ export const handlePostDict = async (constant) => {
 
 export const handleQuizPost = async (model = {}, constant) => {
   let state;
-  const resp = model.find({question: constant.question})
-  if(resp === null || resp.length === 0) {
+  const resp = await model.findOne({question: constant.question})
+  console.log(resp);
+  if(resp !== null) {
+    //* data cannot be saved, it exists.
     return (state = false);
   }
-  const response = await model.create(constant);
-  console.log(response);
-  // if (response) {
-  //   return (state = true);
-  // }
-  // return (state = false);
+  await model.create(constant);
+  return (state = true);
 };
 
 const handleBatchPost = () => {
