@@ -1,6 +1,7 @@
 "use strict";
 import dotenv from "dotenv";
 import { Router } from "express";
+import { saveLogs } from "./utils/log/savelog.js";
 import { handleGetState } from "./controllers/stateController.js";
 import {
   getDictRecord,
@@ -25,7 +26,6 @@ import {
   deleteWord,
   batchUploadWords,
 } from "./controllers/wordsController.js";
-import { saveLogs } from "./utils/log/savelog.js";
 
 const router = Router();
 dotenv.config();
@@ -45,7 +45,7 @@ router.get("/get/word/:name", [use(getOneWord), use(saveLogs)]);
 
 router.get("/get/dict/:record", [use(getOneRecord), use(saveLogs)]);
 
-router.post("/post/batch/dict", [use(batchUploadDict), use(saveLogs)]);
+router.post("/post/batch/dict", [batchUploadDict, saveLogs]);
 
 router.post("/post/batch/words", [batchUploadWords, saveLogs]);
 

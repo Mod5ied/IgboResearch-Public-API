@@ -14,18 +14,18 @@ const WordsSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
+  genre: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+  },
   //* For example (Computing, Farming, Education, etc.)
   group: {
     type: String,
     trim: true,
     lowercase: true,
     // required: true,
-  },
-  genre: {
-    type: String,
-    required: true,
-    trim: true,
-    lowercase: true,
   },
 });
 const PostsSchema = new mongoose.Schema({

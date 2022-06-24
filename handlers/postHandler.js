@@ -33,14 +33,18 @@ export const handlePostDict = async (constant) => {
   return (state = await newRecord.save());
 };
 
-export const handleQuizPost = async (model = {}, constant = []) => {
+export const handleQuizPost = async (model = {}, constant) => {
   let state;
-  const response = await model.create(constant);
-  if (response) {
-    return (state = true);
+  const resp = model.find({question: constant.question})
+  if(resp === null || resp.length === 0) {
+    return (state = false);
   }
-  return (state = false);
-  //todo: see if can look through each for prior existence in document.
+  const response = await model.create(constant);
+  console.log(response);
+  // if (response) {
+  //   return (state = true);
+  // }
+  // return (state = false);
 };
 
 const handleBatchPost = () => {

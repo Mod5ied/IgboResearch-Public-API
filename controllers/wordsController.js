@@ -14,7 +14,7 @@ export const postWord = async (req, res, next) => {
     genre: req.body.genre,
     translation: req.body.translation,
   };
-  postResponse = await handlePostWords(Words, constant);
+  postResponse = await handlePostWords(constant);
   if (!postResponse) {
     return next(ApiError.badRequest(`Resource already exists`));
   }
@@ -26,14 +26,14 @@ export const postWord = async (req, res, next) => {
 };
 //handler for translator get operation:
 export const getWords = async (req, res) => {
-  // if(req.params !== ""){
-  //   res.send("Parameter is wrong")
+  // if (req.params === "") {
+  //   return next(ApiError.notAvailableRequest("Path is invalid"));
   // }
   const getResponse = await handleGet(Words);
   if (getResponse === null) {
     return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
-  res.status(200).json({ state: true, data: getResponse });
+  return res.status(200).json({ state: true, data: getResponse });
 };
 //handler for translator getOne operation:
 export const getOneWord = async (req, res, next) => {

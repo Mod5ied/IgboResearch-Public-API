@@ -3,13 +3,14 @@ const { Schema, model } = pkg;
 
 const SearchQuizSchema = new Schema({
   // quizCode: {
-  //   //todo: a custom incrementer function here:
+  //   //todo: a custom incrementor function here // at contrlr.
   // },
   question: {
     type: String,
     required: true,
     trim: true,
     lowercase: true,
+    unique: true
   },
   answerRight: {
     type: String,
@@ -21,13 +22,14 @@ const SearchQuizSchema = new Schema({
 });
 const DictQuizSchema = new Schema({
   // quizCode: {
-  //   //todo: a custom incrementer function here:
+  //   //todo: a custom incrementor function here:
   // },
   question: {
     type: String,
     required: true,
     trim: true,
     lowercase: true,
+    unique: true
   },
   answerRight: {
     type: String,

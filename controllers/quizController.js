@@ -1,32 +1,30 @@
+import { ApiError } from "../errors/errorParser.js";
 import { handleGet } from "../handlers/getHandler.js";
 import { handleQuizPost } from "../handlers/postHandler.js";
 import { handleQuizUpdate } from "../handlers/updateHandler.js";
-import { Dictionary } from "../models/dictionary.js";
 import { DictQuiz, SearchQuiz } from "../models/quiz.js";
-import { Words } from "../models/words.js";
 
 //handler for quiz create operation:
-export const createQuiz = async (req, res) => {
+export const createQuiz = async (req, res, next) => {
+  const types = ["search", "dict"];
+  if (!types.includes(req.params.quiz)) {
+    return next(ApiError.notAvailableRequest("Path is invalid"));
+  }
   let postResponse;
-  const type = {
-    search: "search",
-    dict: "dict",
-  };
-  const constant = req.body;
   switch (req.params.quiz) {
-    case type.search:
-      try {
-        postResponse = await handleQuizPost(SearchQuiz, constant);
-        if (postResponse) {
-          return res.status(200).json({ state: true, data: postResponse });
-        }
-      } catch (err) {
-        res.status(500).json({ state: false, message: err.message });
+    case types[0]:
+      postResponse = await handleQuizPost(SearchQuiz, req.body);
+      if (!postResponse) {
+        return next(ApiError.badRequest(`Resource already exists`));
       }
-      break;
-    case type.dict:
+      res.status(200).json({ state: true, data: postResponse }).data = {
+        msg: `Resource created`,
+        data: postResponse,
+      };
+      return next()
+    case types[1]:
       try {
-        postResponse = await handleQuizPost(DictQuiz, constant);
+        postResponse = await handleQuizPost(DictQuiz, req.body);
         if (postResponse) {
           return res.status(200).json({ state: true, data: postResponse });
         }
@@ -39,61 +37,63 @@ export const createQuiz = async (req, res) => {
   }
 };
 //handler for quiz get operation:
-export const getQuiz = async (req, res) => {
-  const types = {
-    search: "search",
-    dict: "dict",
-  };
+export const getQuiz = async (req, res, next) => {
+  const types = ["search", "dict"];
+  if (!types.includes(req.params.quiz)) {
+    return next(ApiError.notAvailableRequest("Path is invalid"));
+  }
+  let getResponse;
   switch (req.params.quiz) {
-    case types.search:
-      try {
-        const getResponse = await handleGet(SearchQuiz);
-        res.status(200).json({ state: true, data: getResponse });
-      } catch (err) {
-        res.status(500).json({ state: false, message: err.message });
+    case types[0]:
+      getResponse = await handleGet(SearchQuiz);
+      if (getResponse === null) {
+        return next(ApiError.notFoundRequest(`Resource does not exist`));
       }
-      break;
-    case types.dict:
-      try {
-        const getResponse = await handleGet(DictQuiz);
-        res.status(200).json({ state: true, data: getResponse });
-      } catch (err) {
-        res.status(500).json({ state: false, message: err.message });
+      return res.status(200).json({ state: true, data: getResponse });
+    case types[1]:
+      getResponse = await handleGet(DictQuiz);
+      if (getResponse === null) {
+        return next(ApiError.notFoundRequest(`Resource does not exist`));
       }
-      break;
+      return res.status(200).json({ state: true, data: getResponse });
     default:
-      break;
+      return next(ApiError.methodNotImplemented("Request is unknown"));
   }
 };
 //handler for  quiz delete operation:
-export const deleteQuiz = async (req, res) => {
-  const types = {
-    search: "search",
-    dict: "dict",
-  };
+export const deleteQuiz = async (req, res, next) => {
+  const types = ["search", "dict"];
+  if (!types.includes(req.params.quiz)) {
+    return next(ApiError.notAvailableRequest("Path is invalid"));
+  }
   //todo: delete quizzes by another factor other than id.
-  //! until then, this contrler wont use the delete handler.
+  //! until then, this controller wont use the delete handler.
+  let resp;
   switch (req.params.quiz) {
-    case types.search:
-      try {
-        const resp = await SearchQuiz.findOne({ _id: req.body.id });
-        const response = await resp.remove();
-        res.status(200).json({ state: true, data: response });
-      } catch (err) {
-        res.status(500).json({ state: false, message: err.message });
+    case types[0]:
+      resp = await SearchQuiz.findOne({ _id: req.body.id });
+      if (resp !== null) {
+        await SearchQuiz.deleteOne({ _id: req.body.id });
+        res.status(200).json({
+          state: true,
+          message: `Resource was deleted`,
+        }).data = `Resource was deleted`;
+        return next();
       }
-      break;
-    case types.dict:
-      try {
-        const resp = await DictQuiz.findOne({ _id: req.body.id });
-        const response = await resp.remove();
-        res.status(200).json({ state: true, data: response });
-      } catch (err) {
-        res.status(500).json({ state: false, message: err.message });
+      return next(ApiError.notFoundRequest(`Resource does not exist`));
+    case types[1]:
+      resp = await DictQuiz.findOne({ _id: req.body.id });
+      if (resp !== null) {
+        await DictQuiz.deleteOne({ _id: req.body.id });
+        res.status(200).json({
+          state: true,
+          message: `Resource was deleted`,
+        }).data = `Resource was deleted`;
+        return next();
       }
-      break;
+      return next(ApiError.notFoundRequest(`Resource does not exist`));
     default:
-      break;
+      return next(ApiError.methodNotImplemented("Request is unknown"));
   }
 };
 //handler for quiz patch operation:
