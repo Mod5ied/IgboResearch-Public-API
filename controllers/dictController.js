@@ -4,6 +4,7 @@ import { handlePostDict } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
 import { ApiError } from "../errors/errorParser.js";
 import { Dictionary } from "../models/dictionary.js";
+import logger from "../utils/log/logger.js";
 
 //handler dictionary post operation:
 export const postDictRecord = async (req, res, next) => {
@@ -83,8 +84,13 @@ export const patchDictRecord = async (req, res, next) => {
 //todo: should exist for {trans, dict & quiz}.
 export const batchUploadDict = async (req, res, next) => {
   //* Logs a E11000 duplicate key error collection if redundancy is attempted.
-  const uploads = await Dictionary.create(req.body);
-
-  res.status(200).json({ state: true, data: uploads }).data = uploads;
-  next();
+  try {
+    const uploads = await Dictionary.create(req.body);
+    res.status(200).json({ state: true, data: uploads }).data = uploads;
+    next();
+  } catch (err) {
+    const { keyValue: { name } } = err;
+    logger.error(err.message);
+    return res.status(500).json({message: `${name} already exists in database`})
+  }
 };

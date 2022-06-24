@@ -4,6 +4,7 @@ import { handlePostWords } from "../handlers/postHandler.js";
 import { handleUpdate } from "../handlers/updateHandler.js";
 import { ApiError } from "../errors/errorParser.js";
 import { Words } from "../models/words.js";
+import logger from "../utils/log/logger.js";
 
 //handler for translator post operation:
 export const postWord = async (req, res, next) => {
@@ -79,8 +80,13 @@ export const batchUploadWords = async (req, res, next) => {
   //* Logs a E11000 duplicate key error collection if redundancy is attempted.
   // //! To fetch from the online Posts docs to the new Words doc:
   // const staleWords = await Posts.find({});
-  const uploads = await Words.create(req.body);
-
-  res.status(200).json({ state: true, data: uploads }).data = uploads;
-  next();
+  try {
+    const uploads = await Words.create(req.body);
+    res.status(200).json({ state: true, data: uploads }).data = uploads;
+    next();
+  } catch (err) {
+    const { keyValue: { name } } = err;
+    logger.error(err.message);
+    return res.status(500).json({message: `${name} already exists in database`})
+  }
 };

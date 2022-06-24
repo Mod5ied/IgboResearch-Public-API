@@ -47,7 +47,7 @@ router.get("/get/dict/:record", [use(getOneRecord), use(saveLogs)]);
 
 router.post("/post/batch/dict", [use(batchUploadDict), use(saveLogs)]);
 
-router.post("/post/batch/words", [use(batchUploadWords), use(saveLogs)]);
+router.post("/post/batch/words", [batchUploadWords, saveLogs]);
 
 router.post("/post/batch/:quiz", [use(batchUploadQuiz), use(saveLogs)]);
 
