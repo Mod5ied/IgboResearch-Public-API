@@ -33,10 +33,9 @@ export const handlePostDict = async (constant) => {
   return (state = await newRecord.save());
 };
 
-export const handleQuizPost = async (model = {}, constant) => {
+export const handlePostQuiz = async (model = {}, constant) => {
   let state;
   const resp = await model.findOne({question: constant.question})
-  console.log(resp);
   if(resp !== null) {
     //* data cannot be saved, it exists.
     return (state = false);

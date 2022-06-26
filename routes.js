@@ -63,9 +63,9 @@ router.patch("/update/dict", [use(patchDictRecord), use(saveLogs)]);
 
 router.patch("/update/quiz/:quiz", [use(patchQuiz), use(saveLogs)]);
 
-router.delete("/delete/word/:name", [use(deleteWord), use(saveLogs)]);
+router.delete("/delete/word/", [use(deleteWord), use(saveLogs)]);
 
-router.delete("/delete/dict/:name", [use(deleteDictRecord), use(saveLogs)]);
+router.delete("/delete/dict/", [use(deleteDictRecord), use(saveLogs)]);
 
 router.delete("/delete/quiz/:quiz", [use(deleteQuiz), use(saveLogs)]);
 

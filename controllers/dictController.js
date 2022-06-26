@@ -48,7 +48,7 @@ export const getOneRecord = async (req, res, next) => {
 };
 //handler for dictionary delete operation:
 export const deleteDictRecord = async (req, res, next) => {
-  const constant = req.params.name;
+  const constant = req.body.name;
   const deleteResponse = await handleDelete(Dictionary, constant);
   if (!deleteResponse) {
     return next(ApiError.notFoundRequest(`Resource does not exist`));
@@ -64,7 +64,6 @@ export const deleteDictRecord = async (req, res, next) => {
 export const patchDictRecord = async (req, res, next) => {
   let updatedResponse;
   const constant = {
-    id: req.body.id,
     name: req.body.name,
     genre: req.body.genre,
     translation: req.body.translation,
@@ -83,6 +82,7 @@ export const patchDictRecord = async (req, res, next) => {
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
 export const batchUploadDict = async (req, res, next) => {
+  //* Special, and needs to explicit the error, hence not using the uni-err handler.
   //* Logs a E11000 duplicate key error collection if redundancy is attempted.
   try {
     const uploads = await Dictionary.create(req.body);

@@ -1,6 +1,6 @@
 import { ApiError } from "../errors/errorParser.js";
 import { handleGet } from "../handlers/getHandler.js";
-import { handleBatchPost, handleQuizPost } from "../handlers/postHandler.js";
+import { handleBatchPost, handlePostQuiz } from "../handlers/postHandler.js";
 import { handleQuizUpdate } from "../handlers/updateHandler.js";
 import { DictQuiz, SearchQuiz } from "../models/quiz.js";
 
@@ -13,7 +13,7 @@ export const createQuiz = async (req, res, next) => {
   let postResponse;
   switch (req.params.quiz) {
     case types[0]:
-      postResponse = await handleQuizPost(SearchQuiz, req.body);
+      postResponse = await handlePostQuiz(SearchQuiz, req.body);
       if (!postResponse) {
         return next(ApiError.badRequest(`Resource already exists`));
       }
@@ -23,7 +23,7 @@ export const createQuiz = async (req, res, next) => {
       };
       return next();
     case types[1]:
-      postResponse = await handleQuizPost(DictQuiz, req.body);
+      postResponse = await handlePostQuiz(DictQuiz, req.body);
       if (!postResponse) {
         return next(ApiError.badRequest(`Resource already exists`));
       }
@@ -98,7 +98,7 @@ export const deleteQuiz = async (req, res, next) => {
 };
 //handler for quiz patch operation:
 export const patchQuiz = async (req, res) => {
-  const types = ["search", "dict"];
+  const types = ["search", "dict", "word"];
   if (!types.includes(req.params.quiz)) {
     return next(ApiError.notAvailableRequest("Path is invalid"));
   }
@@ -131,7 +131,7 @@ export const patchQuiz = async (req, res) => {
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
 export const batchUploadQuiz = async (req, res, next) => {
-  const types = ["search", "dict"];
+  const types = ["search", "dict", "word"];
   if (!types.includes(req.params.quiz)) {
     return next(ApiError.notAvailableRequest("Path is invalid"));
   }

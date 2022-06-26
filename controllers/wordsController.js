@@ -53,7 +53,7 @@ export const deleteWord = async (req, res, next) => {
   if (req.params.name === null) {
     return next(ApiError.notAvailableRequest("Path is invalid"));
   }
-  const constant = req.params.name;
+  const constant = req.body.name;
   const deleteResponse = await handleDelete(Words, constant);
   if (!deleteResponse) {
     return next(ApiError.notFoundRequest(`Resource does not exist`));
@@ -83,6 +83,7 @@ export const patchWord = async (req, res) => {
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
 export const batchUploadWords = async (req, res, next) => {
+  //* Special, and needs to explicit the error, hence not using the uni-err handler.
   //* Logs a E11000 duplicate key error collection if redundancy is attempted.
   // //! To fetch from the online Posts docs to the new Words doc:
   // const staleWords = await Posts.find({});
