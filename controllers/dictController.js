@@ -64,6 +64,7 @@ export const deleteDictRecord = async (req, res, next) => {
 export const patchDictRecord = async (req, res, next) => {
   let updatedResponse;
   const constant = {
+    id: req.body.id,
     name: req.body.name,
     genre: req.body.genre,
     translation: req.body.translation,
@@ -73,7 +74,7 @@ export const patchDictRecord = async (req, res, next) => {
   };
   updatedResponse = await handleUpdate(Dictionary, constant);
   if (!updatedResponse) {
-    return next(ApiError.notFoundRequest(`Resource does not exists`));
+    return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
   res.status(200).json({ state: true }).data = updatedResponse;
   next();

@@ -45,9 +45,9 @@ router.get("/get/word/:name", [use(getOneWord), use(saveLogs)]);
 
 router.get("/get/dict/:record", [use(getOneRecord), use(saveLogs)]);
 
-router.post("/post/batch/records", [batchUploadDict, saveLogs]);
+router.post("/post/batch/record", [batchUploadDict, saveLogs]);
 
-router.post("/post/batch/words", [batchUploadWords, saveLogs]);
+router.post("/post/batch/word", [batchUploadWords, saveLogs]);
 
 router.post("/post/batch/:quiz", [use(batchUploadQuiz), use(saveLogs)]);
 
@@ -57,9 +57,9 @@ router.post("/post/dict", [use(postDictRecord), use(saveLogs)]); /* In progress 
 
 router.post("/post/word", [use(postWord), use(saveLogs)]);
 
-router.patch("/update/words", [use(patchWord), use(saveLogs)]);
+router.patch("/update/word/", [use(patchWord), use(saveLogs)]);
 
-router.patch("/update/dict", [use(patchDictRecord), use(saveLogs)]);
+router.patch("/update/dict/", [use(patchDictRecord), use(saveLogs)]);
 
 router.patch("/update/quiz/:quiz", [use(patchQuiz), use(saveLogs)]);
 

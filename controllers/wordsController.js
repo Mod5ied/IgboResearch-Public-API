@@ -65,10 +65,10 @@ export const deleteWord = async (req, res, next) => {
   next();
 };
 //handler for translator update operations:
-export const patchWord = async (req, res) => {
+export const patchWord = async (req, res, next) => {
   let updatedResponse;
   const constant = {
-    name: req.body.name,
+    name: req?.body?.name,
     translation: req?.body?.translation,
     genre: req?.body?.genre,
   };
