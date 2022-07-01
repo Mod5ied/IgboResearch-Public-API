@@ -21,9 +21,6 @@ const SearchQuizSchema = new Schema({
   answerWrong: { type: String, trim: true, lowercase: true },
 });
 const DictQuizSchema = new Schema({
-  // quizCode: {
-  //   //todo: a custom incrementor function here:
-  // },
   question: {
     type: String,
     required: true,
@@ -39,6 +36,8 @@ const DictQuizSchema = new Schema({
   },
   answerWrong1: { type: String, trim: true, lowercase: true },
   answerWrong2: { type: String, trim: true, lowercase: true },
+  // quizCode: {
+  // },
 });
 
 export const SearchQuiz = model("SearchQuiz", SearchQuizSchema);

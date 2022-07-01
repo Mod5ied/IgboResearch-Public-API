@@ -19,7 +19,7 @@ export const postWord = async (req, res, next) => {
   };
   postResponse = await handlePostWords(constant);
   if (!postResponse) {
-    return next(ApiError.badRequest(`Resource already exists`));
+    return next(ApiError.badRequest(`Resource already exist`));
   }
   res.status(200).json({ state: true }).data = {
     msg: `Resource created`,
@@ -43,7 +43,7 @@ export const getOneWord = async (req, res, next) => {
   const constant = req.params.name;
   const getResponse = await handleGetOne(Words, constant);
   if (getResponse === null) {
-    return next(ApiError.notFoundRequest(`Resource does not exists`));
+    return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
   res.status(200).json({ state: true, data: getResponse }).data = getResponse;
   next();
@@ -74,7 +74,7 @@ export const patchWord = async (req, res, next) => {
   };
   updatedResponse = await handleUpdate(Words, constant);
   if (!updatedResponse) {
-    return next(ApiError.notFoundRequest(`Resource does not exists`));
+    return next(ApiError.notFoundRequest(`Resource does not exist`));
   }
   res.status(200).json({ state: true }).data = updatedResponse;
   next();

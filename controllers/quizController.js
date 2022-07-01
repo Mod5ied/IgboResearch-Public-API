@@ -6,6 +6,7 @@ import { DictQuiz, SearchQuiz } from "../models/quiz.js";
 
 //handler for quiz create operation:
 export const createQuiz = async (req, res, next) => {
+  console.log(req.body);
   const types = ["search", "dict"];
   if (!types.includes(req.params.quiz)) {
     return next(ApiError.notAvailableRequest("Path is invalid"));
