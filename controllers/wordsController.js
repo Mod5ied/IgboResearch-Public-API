@@ -88,12 +88,15 @@ export const batchUploadWords = async (req, res, next) => {
   // //! To fetch from the online Posts docs to the new Words doc:
   // const staleWords = await Posts.find({});
   try {
+    console.log(req.body)
     const uploads = await Words.create(req.body);
-    res.status(200).json({ state: true, data: uploads }).data = uploads;
+    res.status(200).json({ state: true }).data = uploads;
     next();
   } catch (err) {
-    const { keyValue: { name } } = err;
+    const {
+      keyValue: { name },
+    } = err;
     logger.error(err.message);
-    return res.status(500).json({message: `${name} already exists in database`})
+    return res.status(400).json({ message: `'${name}' already exists in database` });
   }
 };

@@ -132,7 +132,7 @@ export const patchQuiz = async (req, res) => {
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
 export const batchUploadQuiz = async (req, res, next) => {
-  const types = ["search", "dict", "word"];
+  const types = ["search", "dict"];
   if (!types.includes(req.params.quiz)) {
     return next(ApiError.notAvailableRequest("Path is invalid"));
   }
