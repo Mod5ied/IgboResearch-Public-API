@@ -1,10 +1,11 @@
 # IgboResearch-Public-API
 
-Provide an introductory paragraph, describing:
 A free and open-source version of the IgboResearch project.
+An Igbo language dictionary and word-translation software project.
 
-* What your project does
-* Why people should consider using your project
+* Revolutionalizes Igbo language translation and understanding.
+* Delivers accurate and well-researched results for queries.
+* Makes research with Igbo language enjoyable and intutive.
 * Link to project home page
 
 ## Table of Contents
@@ -30,103 +31,132 @@ A free and open-source version of the IgboResearch project.
 
 ## About the Project
 
-Here you can provide more details about the project
-* What features does your project provide?
-* Short motivation for the project? (Don't be too long winded)
+* Personalized search results
+* Dictionary tab for deeper research and queries.
+* No generic translations and dictionary results.
+* Suggestive prompts for possible search query.
+* Interative translation quiz feature for young users and school students.
+* Intractive dictionary quiz feature.
+* This project aims to provide what traditional solutions like Google translate fail to give.
 * Links to the project site
 
 ```
-Show some example code to describe what your project does
-Show some of your APIs
+Fetch words from the search database cluster:
+
+const getWords = async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const res = await axios.get(`${endPoints.url1}allWords`);
+        const results = await res.data;
+        resolve(results);
+        if (!results.state) {
+          throw new Error(results.state);
+        }
+      } catch (err) {
+        reject(err.response.data);
+      }
+    });
+  };
+
+Make a batch-upload from your favorite in-browser database e.g(indexedDB, localStorage) to search
+to search or dictionary database cluster.
+  
+  const batchUpload = async (data = [], constant = "") => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const res = await axios.post(`${endPoints.url2}${constant}`, data);
+        const results = await res.data;
+        resolve(results);
+      } catch (err) {
+        reject(err.response.data);
+      }
+    });
+  };
 ```
 
 **[Back to top](#table-of-contents)**
 
 ## Project Status
 
-Show the build status if you have a CI server:
-
-[![Build Status](http://your-server:12345/job/badge/icon)](http://your-server/job/badge/icon/)
-
-Describe the current release and any notes about the current state of the project. Examples: currently compiles on your host machine, but is not cross-compiling for ARM, APIs are not set, feature not implemented, etc.
+Currently compiles on your host machine, APIs are set and currently in use, offline storage feature partially implemented, etc.
 
 **[Back to top](#table-of-contents)**
 
 ## Getting Started
 
-This section should provide instructions for other developers to
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Dependencies
 
-Describe what software and libraries you will need to install in order to build and use this project. Provide details on how to resolve these dependencies.
+DEVELOPMENT dependencies:
+* Node.js (v.14 and above).
+* Express.js. (v.4 and above)
+* Mongoose (Make sure to have mongodb installed locally, if you wish to run on your local machine).
+* Helmet (Prevents cross-origin attacks and cors exceptions).
+* Pino, Pino-pretty (Pino is used for logging).
+* Dotenv (Handles the environment variables for the software)
+* BCrypt.
 
-Remember: `git-lfs` is a dependency that developers will need to resolve before they can get started with a repository using LFS.
+TEST dependencies:
+* mocha (test library)
+* chai (assertion library)
+* mockgoose (though I would recommend mongodb-memory-server)
+* supertest.
 
+### Installation (Core dependencies)
 ```
-Examples should be included
+YARN:
+    yarn add node@latest express@latest mongoose helmet pino pino-pretty dotenv bycrypt
+    
+NPM: 
+    npm install node@latest express@latest mongoose helmet pino pino-pretty dotenv bycrypt
+```
+
+### Installation (Dev and Test dependencies)
+```
+YARN:
+    yarn add -D mocha chai mockgoose supertest
+    
+NPM: 
+    npm install -D mocha chai mockgoose supertest
 ```
 
 ### Getting the Source
 
-Include a link to your GitHub repository (you have no idea how people will find your code), and also a summary of how to clone.
-
-This project is [hosted on GitHub](https://github.com/embeddedartistry/embedded-resources). You can clone this project directly using this command:
+This project is [hosted on GitHub](https://github.com/Mod5ied/IgboResearch-Public-API). You can clone this project directly using this command:
 
 ```
-git clone git@github.com:embeddedartistry/templates.git
+git clone git@github.com:Mod5ied/IgboResearch-Public-API.git
 ```
+### Running the cloned project
 
-### Building
-
-Instructions for how to build your project
+Simply run the command below to install all dependencies:
 
 ```
-Examples should be included
+    npm install
+    
+    yarn
 ```
 
 ### Running Tests
 
-Describe how to run unit tests for your project.
+Executes the test scripts.
 
 ```
-Examples should be included
-```
-
-#### Other Tests
-
-If you have formatting checks, coding style checks, or static analysis tests that must pass before changes will be considered, add a section for those and provide instructions
-
-### Installation
-
-Instructions for how to install your project's build artifacts
-
-```
-Examples should be included
+    npm run test
+    
+    yarn run test
 ```
 
 ### Usage
 
-Instructions for using your project. Ways to run the program, how to include it in another project, etc.
+Spin up the dev server and run the project using the command:
 
 ```
-Examples should be included
+    npm run start
+    
+    yarn run start
 ```
-
-If your project provides an API, either provide details for usage in this document or link to the appropriate API reference documents
-
-**[Back to top](#table-of-contents)**
-
-## Release Process
-
-Talk about the release process. How are releases made? What cadence? How to get new releases?
-
-### Versioning
-
-This project uses [Semantic Versioning](http://semver.org/). For a list of available versions, see the [repository tag list](https://github.com/your/project/tags).
-
-### Payload
 
 **[Back to top](#table-of-contents)**
 
@@ -142,30 +172,23 @@ We encourage public contributions! Please review [CONTRIBUTING.md](docs/CONTRIBU
 
 **[Back to top](#table-of-contents)**
 
-## Further Reading
-
-Provide links to other relevant documentation here
-
 **[Back to top](#table-of-contents)**
 
 ## License
 
-Copyright (c) 2021 Embedded Artistry LLC
+Copyright (c) 2021 Ogwuru Patrick.
 
-This project is licensed under the XXXXXX License - see [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see [LICENSE.md](LICENSE.md) file for details.
 
 **[Back to top](#table-of-contents)**
 
 ## Authors
 
-* **[Phillip Johnston](https://github.com/phillipjohnston)** - *Initial work* - [Embedded Artistry](https://github.com/embeddedartistry)
-
-Also see the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **[Ogwuru Patrick](https://github.com/mod5ied)** - *Initial work* - [Embedded Artistry](https://github.com/Mod5ied/IgboResearch-Public-API)
 
 **[Back to top](#table-of-contents)**
 
 ## Acknowledgments
-
-Provide proper credits, shout-outs, and honorable mentions here. Also provide links to relevant repositories, blog posts, or contributors worth mentioning.
+https://github.com/Mod5ied
 
 **[Back to top](#table-of-contents)**
