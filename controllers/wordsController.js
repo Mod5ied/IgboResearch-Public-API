@@ -83,10 +83,10 @@ export const patchWord = async (req, res, next) => {
 //handler for batch-uploads from offlineStore.
 //todo: should exist for {trans, dict & quiz}.
 export const batchUploadWords = async (req, res, next) => {
-  //* Special, and needs to explicit the error, hence not using the uni-err handler.
+  //* Special, and needs to explicit the error, hence not using the universal-err handler.
   //* Logs a E11000 duplicate key error collection if redundancy is attempted.
-  // //! To fetch from the online Posts docs to the new Words doc:
-  // const staleWords = await Posts.find({});
+  //! To fetch from the online Posts docs to the new Words doc:
+  //! const staleWords = await Posts.find({});
   try {
     console.log(req.body)
     const uploads = await Words.create(req.body);

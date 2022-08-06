@@ -30,8 +30,11 @@ import {
 const router = Router();
 dotenv.config();
 
+/* This universal error handler functions well to catch all errors in the app from the root of our app, 
+   and efficiently sends them to tne error handlers, as well as logHandlers for proper and clean handling */
 const use = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next);
+  
 
 router.get("/allWords", [use(getWords), use(saveLogs)]);
 
