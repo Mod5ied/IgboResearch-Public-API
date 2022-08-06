@@ -172,8 +172,6 @@ We encourage public contributions! Please review [CONTRIBUTING.md](docs/CONTRIBU
 
 **[Back to top](#table-of-contents)**
 
-**[Back to top](#table-of-contents)**
-
 ## License
 
 Copyright (c) 2021 Ogwuru Patrick.
