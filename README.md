@@ -184,7 +184,7 @@ This project is licensed under the MIT License - see [LICENSE.md](LICENSE.md) fi
 
 ## Authors
 
-* **[Ogwuru Patrick](https://github.com/mod5ied)** - *Initial work* - [Embedded Artistry](https://github.com/Mod5ied/IgboResearch-Public-API)
+* **[Ogwuru Patrick](https://github.com/mod5ied)** - *Initial work* - [IgboResearch API](https://github.com/Mod5ied/IgboResearch-Public-API)
 
 **[Back to top](#table-of-contents)**
 
