@@ -1,10 +1,10 @@
 // import { expect } from "chai";
 // import mongoose from "mongoose";
 // import request from "supertest";
-// import { app } from "../app.js";
+// import { Application } from "../app/app.js";
+// const req = request(Application._server);
 // import { DatabaseWorkers } from "../handlers/database.js";
 // const { connectDb } = DatabaseWorkers;
-// const req = request(app);
 
 // describe("Words-upload", () => {
 //   describe("uploads to database", () => {

@@ -32,15 +32,20 @@ class DatabaseWorkers {
   };
 }
 
-async function startApp(app, port, local) {
-  await DatabaseWorkers.connectDb(local);
-  app.listen(port, async (err, next) => {
-    if (err) {
-      logger.fatal(`${err.message} - Error starting app`);
-      return next(ApiError.internalError(err.message || `Error starting app`));
-    }
-    appState = true;
-    logger.info(`App is running on port`);
-  });
+async function startDatabase(local) {
+  try {
+    await DatabaseWorkers.connectDb(local);
+  } catch (err) {
+    logger.fatal(`${err.message} - Error starting database`);
+    return next(ApiError.internalError(err.message || `Error starting database`));
+  }
+  // app.listen(port, async (err, next) => {
+  //   if (err) {
+  //     logger.fatal(`${err.message} - Error starting app`);
+  //     return next(ApiError.internalError(err.message || `Error starting app`));
+  //   }
+  //   appState = true;
+  //   logger.info(`App is running on port`);
+  // });
 }
-export { appState, DatabaseWorkers, startApp };
+export { DatabaseWorkers, startDatabase };

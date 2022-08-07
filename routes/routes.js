@@ -1,8 +1,8 @@
 "use strict";
 import dotenv from "dotenv";
 import { Router } from "express";
-import { saveLogs } from "./utils/log/savelog.js";
-import { handleGetState } from "./controllers/stateController.js";
+import { saveLogs } from "../utils/log/savelog.js";
+import { handleGetState } from "../controllers/stateController.js";
 import {
   getDictRecord,
   postDictRecord,
@@ -10,14 +10,14 @@ import {
   deleteDictRecord,
   batchUploadDict,
   getOneRecord,
-} from "./controllers/dictController.js";
+} from "../controllers/dictController.js";
 import {
   getQuiz,
   createQuiz,
   patchQuiz,
   deleteQuiz,
   batchUploadQuiz,
-} from "./controllers/quizController.js";
+} from "../controllers/quizController.js";
 import {
   getWords,
   getOneWord,
@@ -25,7 +25,7 @@ import {
   patchWord,
   deleteWord,
   batchUploadWords,
-} from "./controllers/wordsController.js";
+} from "../controllers/wordsController.js";
 
 const router = Router();
 dotenv.config();

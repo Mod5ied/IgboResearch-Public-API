@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import mongoose from "mongoose";
 import request from "supertest";
-import { app } from "../app.js";
-const req = request(app);
+import { Application } from "../app/app.js";
+const req = request(Application._server);
 import { DatabaseWorkers } from "../handlers/database.js";
 const { connectDb } = DatabaseWorkers;
 
