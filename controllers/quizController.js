@@ -1,7 +1,7 @@
 import { ApiError } from "../errors/errorParser.js";
-import { handleGet } from "../handlers/getHandler.js";
-import { handleBatchPost, handlePostQuiz } from "../handlers/postHandler.js";
-import { handleQuizUpdate } from "../handlers/updateHandler.js";
+import { handleGet } from "../services/getHandler.js";
+import { handleBatchPost, handlePostQuiz } from "../services/postHandler.js";
+import { handleQuizUpdate } from "../services/updateHandler.js";
 import { DictQuiz, SearchQuiz } from "../models/quiz.js";
 
 //handler for quiz create operation:

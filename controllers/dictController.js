@@ -1,7 +1,7 @@
-import { handleDelete } from "../handlers/deleteHandler.js";
-import { handleGet, handleGetOne } from "../handlers/getHandler.js";
-import { handlePostDict } from "../handlers/postHandler.js";
-import { handleUpdate } from "../handlers/updateHandler.js";
+import { handleDelete } from "../services/deleteHandler.js";
+import { handleGet, handleGetOne } from "../services/getHandler.js";
+import { handlePostDict } from "../services/postHandler.js";
+import { handleUpdate } from "../services/updateHandler.js";
 import { ApiError } from "../errors/errorParser.js";
 import { Dictionary } from "../models/dictionary.js";
 import logger from "../utils/log/logger.js";
