@@ -3,7 +3,7 @@ const { Schema, model } = pkg;
 
 const SearchQuizSchema = new Schema({
   // quizCode: {
-  //   //todo: a custom incrementor function here // at contrlr.
+  //   //todo: a custom incrementor function here // at cntlr.
   // },
   question: {
     type: String,

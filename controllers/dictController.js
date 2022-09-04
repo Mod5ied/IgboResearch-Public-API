@@ -62,6 +62,7 @@ export const deleteDictRecord = async (req, res, next) => {
 };
 //handlers for dictionary update operations:
 //todo: to update code soon...
+//todo! update handler soon!
 export const patchDictRecord = async (req, res, next) => {
 	let updatedResponse;
 	const constant = {
